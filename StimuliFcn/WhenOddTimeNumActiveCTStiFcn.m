@@ -31,7 +31,7 @@ function WhenOddTimeNumActiveCTStiFcn(device)
 
     %% Set TDT device obj
 %     DTO.obj = []; % For Test Only
-    DTO.obj = TDEV();
+     DTO.obj = TDEV();
     DTO.obj.standby;
     pause(2);
 %     DTO.obj.record;
@@ -43,7 +43,7 @@ function WhenOddTimeNumActiveCTStiFcn(device)
 
     %% Set timer
     delete(timerfind);
-    DTO.period = 0.02; % sec
+    DTO.period = 0.01; % sec
     set(device, 'UserData', DTO);
     mTimer = timer('TimerFcn', {@mTimerFcn, device}, 'Period', DTO.period, 'ExecutionMode', 'fixedRate');
     start(mTimer);
