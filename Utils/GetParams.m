@@ -27,6 +27,8 @@ function params = GetParams(handles)
     paramsGet.intensityStd = str2double(get(handles.intensityStd, 'string'));
     paramsGet.durationStd = str2double(get(handles.durationStd, 'string'));
     paramsGet.randomStdFreqFlag = get(handles.randomStdFreqFlag, 'value');
+    paramsGet.fixedDevFlag = get(handles.fixedDevFlag, 'value');
+    paramsGet.offsetChoiceWinFlag = get(handles.offsetChoiceWinFlag, 'value');
     paramsGet.stiPosition = get(handles.stiPosition, 'UserData');
     paramsGet.freqBaseDiffRatio = str2double(get(handles.freqBaseDiffRatio, 'string'));
     paramsGet.intensityMinDiff = str2double(get(handles.intensityMinDiff, 'string'));
@@ -37,6 +39,7 @@ function params = GetParams(handles)
     paramsGet.freqIncOrDec = get(handles.freqIncOrDec, 'UserData');
     paramsGet.intensityIncOrDec = get(handles.intensityIncOrDec, 'UserData');
     paramsGet.durationIncOrDec = get(handles.durationIncOrDec, 'UserData');
+    paramsGet.activeOrPassive = get(handles.activeOrPassive, 'UserData');
 
     %% Save UI params to appdata
     paramsNames = fieldnames(paramsGet);

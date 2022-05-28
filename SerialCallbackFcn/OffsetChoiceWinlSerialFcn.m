@@ -1,4 +1,4 @@
-function GeneralSerialFcn(device, ~)
+function OffsetChoiceWinlSerialFcn(device, ~)
     %% Read 1 byte data from serialport
     res = read(device, 1, 'uint8');
     %% Get constants and variables
@@ -36,7 +36,7 @@ function GeneralSerialFcn(device, ~)
         if trialStartFlag
             pushInTrialFlag = true;
 
-            if stiCount <= stdNum
+            if time2LastSound <= durationStd + choiceWindow(1)
                 % interruption
                 disp('interrupt');
                 disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
@@ -51,15 +51,16 @@ function GeneralSerialFcn(device, ~)
             else
                 % dev correct
 %                 if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')
-                if time2LastSound >=  choiceWindow(1)  && time2LastSound <= choiceWindow(2) && strcmp(oddballType, 'DEV')
+                time2LastSound
+                if time2LastSound >=  durationStd + choiceWindow(1)  && time2LastSound <= durationStd + choiceWindow(2) && strcmp(oddballType, 'DEV')
                     disp('dev correct');
-
+                    
                     obj.write('W', rewardTimeCorrect);
                     if sweepCount > 200
                         obj.write('W', rewardTimeCorrect*1.3);
                     end
                     if sweepCount > 300
-                        obj.write('W', rewardTimeCorrect*1.8);
+                        obj.write('W', rewardTimeCorrect*1.6);
                     end
                     obj.write('water', 1);
                     obj.write('water', 0);

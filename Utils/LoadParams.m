@@ -30,6 +30,8 @@ function paramsLoad = LoadParams(handles, paramsFromFile)
     set(handles.intensityStd, 'string', num2str(paramsFromFile.intensityStd));
     set(handles.durationStd, 'string', num2str(paramsFromFile.durationStd));
     set(handles.randomStdFreqFlag, 'value', paramsFromFile.randomStdFreqFlag);
+    set(handles.fixedDevFlag, 'value', paramsFromFile.fixedDevFlag);
+    set(handles.offsetChoiceWinFlag, 'value', paramsFromFile.offsetChoiceWinFlag);
 
     set(handles.stiPosition, 'SelectedObject', handles.(paramsFromFile.stiPosition));
     set(handles.stiPosition, 'UserData', paramsFromFile.stiPosition);
@@ -50,6 +52,9 @@ function paramsLoad = LoadParams(handles, paramsFromFile)
 
     set(handles.durationIncOrDec, 'SelectedObject', handles.(paramsFromFile.durationIncOrDec));
     set(handles.durationIncOrDec, 'UserData', paramsFromFile.durationIncOrDec);
+    
+    set(handles.activeOrPassive, 'SelectedObject', handles.(paramsFromFile.activeOrPassive));
+    set(handles.activeOrPassive, 'UserData', paramsFromFile.activeOrPassive);
 
     %% Update appdata
     paramsNames = fieldnames(paramsFromFile);

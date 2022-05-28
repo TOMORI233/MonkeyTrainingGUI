@@ -22,7 +22,7 @@ function varargout = MonkeyTrainingGUI(varargin)
 
 % Edit the above text to modify the response to help MonkeyTrainingGUI
 
-% Last Modified by GUIDE v2.5 01-Dec-2021 14:05:08
+% Last Modified by GUIDE v2.5 25-May-2022 15:22:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -52,7 +52,7 @@ function MonkeyTrainingGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to MonkeyTrainingGUI (see VARARGIN)
 
-addpath("SettingFcn\", "StimuliFcn\", "SerialCallbackFcn\", "Utils\", "Documents\Intensity Files\", "Params\", "Protocol\");
+addpath(genpath(mfilename('fullpath')));
 warning off;
 load('protocolList.mat', 'protocolList');
 searchResult = protocolList;
@@ -72,6 +72,8 @@ set(handles.freqIncOrDec, 'UserData', 'freqInc');
 set(handles.intensityIncOrDec, 'UserData', 'intensityInc');
 set(handles.durationIncOrDec, 'UserData', 'durationInc');
 set(handles.stiPosition, 'UserData', 'positionA');
+set(handles.activeOrPassive, 'UserData', 'activeBehavior');
+set(handles.activeOrPassive, 'SelectedObject', handles.activeBehavior);
 set(handles.buttonStop, 'Enable', 'off');
 
 % Choose default command line output for MonkeyTrainingGUI
@@ -228,6 +230,7 @@ if ~passOrNot
     Msgbox(errorMsg, 'Validation Failure');
 else
     %% Open serial port
+    disp('Opening serial port...');
     device = getappdata(handles.MonkeyTrainingGUIFig, 'device');
     if isempty(device)
         try
@@ -235,6 +238,7 @@ else
             setappdata(handles.MonkeyTrainingGUIFig, 'device', device);
         catch
             Msgbox('Port open FAILED!', 'Error', 'center');
+            error('Port open FAILED!');
         end
     end
     %% Run stimuliFcn
@@ -991,3 +995,29 @@ function listBox_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to listBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes when selected object is changed in activeOrPassive.
+function activeOrPassive_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in activeOrPassive 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.activeOrPassive, 'UserData', get(hObject, 'tag'));
+
+
+% --- Executes on button press in fixedDevFlag.
+function fixedDevFlag_Callback(hObject, eventdata, handles)
+% hObject    handle to fixedDevFlag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of fixedDevFlag
+
+
+% --- Executes on button press in offsetChoiceWinFlag.
+function offsetChoiceWinFlag_Callback(hObject, eventdata, handles)
+% hObject    handle to offsetChoiceWinFlag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of offsetChoiceWinFlag

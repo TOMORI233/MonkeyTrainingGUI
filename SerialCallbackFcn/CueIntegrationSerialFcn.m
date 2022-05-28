@@ -39,6 +39,10 @@ function CueIntegrationSerialFcn(device, ~)
             if stiCount <= stdNum
                 % interruption
                 disp('interrupt');
+                offTime = ((numAllall(sweepCount)-stiCount)*ISI + delayTime/2);
+                obj.TD.write('offTime', offTime);
+                obj.TD.write('intrpt', 1);
+                obj.TD.write('intrpt', 0);
                 obj.write('error', 1);
                 trialStartFlag = false;
                 sweepCount = sweepCount - 1;
