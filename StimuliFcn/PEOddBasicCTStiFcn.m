@@ -33,6 +33,9 @@ end
 
 %% Save DTO to device userdata and enable serialport callback
 set(device, 'UserData', DTO);
+if offsetChoiceWinFlag
+    DTO.callbackFcn = @OffsetChoiceWinlSerialFcn;
+end
 configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
 %% Generate oddball sequence
@@ -216,7 +219,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     
     % time to devonset
     if sweepCount == 1
-%         obj.write('TTLOn', 2);
+        obj.write('waterDelay', waterDelayTimeDev);
         idx = 1: (soundNum(1)-1);
     else
         idx = (1:soundNum(sweepCount)-1) + sum(soundNum(1 : sweepCount - 1));
@@ -274,7 +277,7 @@ end
 
 % Std trial correct
 % std water time uncorrect, add ISI 20220520
-if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=  waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     
     obj.write('W', rewardTimeCorrect);
     obj.write('water', 1);
@@ -285,7 +288,7 @@ end
 
 
 % Trial auto end
-if trialStartFlag && stiCount >= stdNum + 1 && tCount > lastStiOnsetTime + max([waterDelayTimeStd choiceWindow(2)]) / period
+if trialStartFlag && stiCount >= stdNum + 1 && tCount > lastStiOnsetTime  + max( offsetChoiceWinFlag * durationStd + [waterDelayTimeStd choiceWindow(2)]) / period
     
 %     disp('trial auto end');
     trialStartFlag = false;

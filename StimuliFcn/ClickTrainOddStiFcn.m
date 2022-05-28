@@ -20,7 +20,6 @@ DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
 DTO.vars.firstOnset2LastOnset = 0;
 DTO.vars.time2LastSound = 0; % for choice win based on tic-toc
-DTO.vars.sessionStart = 0;
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -32,7 +31,6 @@ end
 
 %% Save DTO to device userdata and enable serialport callback
 set(device, 'UserData', DTO);
-
 if offsetChoiceWinFlag
     DTO.callbackFcn = @OffsetChoiceWinlSerialFcn;
 end
@@ -231,7 +229,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     % time to devonset
     if sweepCount == 1
         obj.write('waterDelay', waterDelayTimeDev);
-        idx = 1:soundNum(1)-1
+        idx = 1:soundNum(1)-1;
     else
         idx = (1:soundNum(sweepCount)-1) + sum(soundNum(1 : sweepCount - 1));
     end
@@ -281,9 +279,7 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
             case 'noise'
 
         end
-        obj.write('numAll', soundNum(sweepCount));
-        obj.write('waterDelay', waterDelayTimeDev);
-        obj.write('Duration', durationStd);
+
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic
