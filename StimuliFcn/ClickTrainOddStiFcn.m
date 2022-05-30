@@ -87,7 +87,9 @@ for trialN = 1:sweepCountMax*2
             orderSSA = [1 1; 1 3; 6 6; 6 8; 11 11; 11 12; 15 15; 15 16; 19 19; 19 20];
             orders = [1 2 3 4 5 6 7 8 9 10];
 %             orderProb=ones(1,10)/10;
-            orderProb= repmat([1/20 3/20],1,5);
+%             orderProb= repmat([2/20 2/20],1,5);
+            orderProb= [2/15 3/15 2/15 3/15 0 0 0 0 2/15 3/15];
+%             orderProb= [0 0 1/2 1/2 0 0 0 0 0 0];
             orderIdx = randsrc(1,1,[orders; orderProb]);
             stdOrder = orderSSA(orderIdx,1);
             curOrder = orderSSA(orderIdx,2);
@@ -279,7 +281,7 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
             case 'noise'
 
         end
-
+        obj.write('Duration', durationStd);
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic
@@ -290,7 +292,7 @@ end
 
 % Std trial correct
 
-if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     obj.write('W', rewardTimeCorrect);
     if sweepCount > 200
         obj.write('W', rewardTimeCorrect*1.3);
