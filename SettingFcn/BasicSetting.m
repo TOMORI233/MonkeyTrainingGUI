@@ -1,35 +1,35 @@
-function varargout = CueIntegrationSetting(varargin)
-% CUEINTEGRATIONSETTING MATLAB code for CueIntegrationSetting.fig
-%      CUEINTEGRATIONSETTING, by itself, creates a new CUEINTEGRATIONSETTING or raises the existing
+function varargout = BasicSetting(varargin)
+% BASICSETTING MATLAB code for BasicSetting.fig
+%      BASICSETTING, by itself, creates a new BASICSETTING or raises the existing
 %      singleton*.
 %
-%      H = CUEINTEGRATIONSETTING returns the handle to a new CUEINTEGRATIONSETTING or the handle to
+%      H = BASICSETTING returns the handle to a new BASICSETTING or the handle to
 %      the existing singleton*.
 %
-%      CUEINTEGRATIONSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in CUEINTEGRATIONSETTING.M with the given input arguments.
+%      BASICSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in BASICSETTING.M with the given input arguments.
 %
-%      CUEINTEGRATIONSETTING('Property','Value',...) creates a new CUEINTEGRATIONSETTING or raises the
+%      BASICSETTING('Property','Value',...) creates a new BASICSETTING or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before CueIntegrationSetting_OpeningFcn gets called.  An
+%      applied to the GUI before BasicSetting_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to CueIntegrationSetting_OpeningFcn via varargin.
+%      stop.  All inputs are passed to BasicSetting_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help CueIntegrationSetting
+% Edit the above text to modify the response to help BasicSetting
 
-% Last Modified by GUIDE v2.5 01-Jun-2022 10:17:59
+% Last Modified by GUIDE v2.5 01-Jun-2022 10:20:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @CueIntegrationSetting_OpeningFcn, ...
-                   'gui_OutputFcn',  @CueIntegrationSetting_OutputFcn, ...
+                   'gui_OpeningFcn', @BasicSetting_OpeningFcn, ...
+                   'gui_OutputFcn',  @BasicSetting_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,38 +44,37 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before CueIntegrationSetting is made visible.
-function CueIntegrationSetting_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before BasicSetting is made visible.
+function BasicSetting_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to CueIntegrationSetting (see VARARGIN)
+% varargin   command line arguments to BasicSetting (see VARARGIN)
 
 if ~isempty(varargin)
     paramsLoad = varargin{1};
     try
         set(handles.freqTrialRatio, 'string', num2str(paramsLoad.freqTrialRatio));
-        set(handles.locationTrialRatio, 'string', num2str(paramsLoad.locationTrialRatio));
+        set(handles.intensityTrialRatio, 'string', num2str(paramsLoad.intensityTrialRatio));
         set(handles.doubleTrialRatio, 'string', num2str(paramsLoad.doubleTrialRatio));
-        set(handles.locationNum, 'string', num2str(paramsLoad.locationNum));
     catch
 %         msgbox('Params MISSING!');
     end
 end
 
-% Choose default command line output for CueIntegrationSetting
+% Choose default command line output for BasicSetting
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes CueIntegrationSetting wait for user response (see UIRESUME)
-uiwait(handles.CueIntegrationSettingFig);
+% UIWAIT makes BasicSetting wait for user response (see UIRESUME)
+uiwait(handles.BasicSettingFig);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = CueIntegrationSetting_OutputFcn(hObject, eventdata, handles) 
+function varargout = BasicSetting_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -83,7 +82,7 @@ function varargout = CueIntegrationSetting_OutputFcn(hObject, eventdata, handles
 
 % Get default command line output from handles structure
 % varargout{1} = handles.output;
-varargout{1} = getappdata(handles.CueIntegrationSettingFig, 'params');
+varargout{1} = getappdata(handles.BasicSettingFig, 'params');
 delete(hObject);
 
 
@@ -93,12 +92,12 @@ function buttonOK_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 params.freqTrialRatio = str2double(get(handles.freqTrialRatio, 'String'));
-params.locationTrialRatio = str2double(get(handles.locationTrialRatio, 'String'));
+params.intensityTrialRatio = str2double(get(handles.intensityTrialRatio, 'String'));
 params.doubleTrialRatio = str2double(get(handles.doubleTrialRatio, 'String'));
-params.locationNum = str2double(get(handles.locationNum, 'String'));
-setappdata(handles.CueIntegrationSettingFig, 'params', params);
 
-uiresume(handles.CueIntegrationSettingFig);
+setappdata(handles.BasicSettingFig, 'params', params);
+
+uiresume(handles.BasicSettingFig);
 
 
 % --- Executes on button press in buttonCancel.
@@ -106,8 +105,8 @@ function buttonCancel_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonCancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-setappdata(handles.CueIntegrationSettingFig, 'params', []);
-uiresume(handles.CueIntegrationSettingFig);
+setappdata(handles.BasicSettingFig, 'params', []);
+uiresume(handles.BasicSettingFig);
 
 
 function freqTrialRatio_Callback(hObject, eventdata, handles)
@@ -133,18 +132,18 @@ end
 
 
 
-function locationTrialRatio_Callback(hObject, eventdata, handles)
-% hObject    handle to locationTrialRatio (see GCBO)
+function intensityTrialRatio_Callback(hObject, eventdata, handles)
+% hObject    handle to intensityTrialRatio (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of locationTrialRatio as text
-%        str2double(get(hObject,'String')) returns contents of locationTrialRatio as a double
+% Hints: get(hObject,'String') returns contents of intensityTrialRatio as text
+%        str2double(get(hObject,'String')) returns contents of intensityTrialRatio as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function locationTrialRatio_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to locationTrialRatio (see GCBO)
+function intensityTrialRatio_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to intensityTrialRatio (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -178,9 +177,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes when user attempts to close CueIntegrationSettingFig.
-function CueIntegrationSettingFig_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to CueIntegrationSettingFig (see GCBO)
+% --- Executes when user attempts to close BasicSettingFig.
+function BasicSettingFig_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to BasicSettingFig (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -192,9 +191,9 @@ catch
 end
 
 
-% --- Executes on key press with focus on CueIntegrationSettingFig or any of its controls.
-function CueIntegrationSettingFig_WindowKeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to CueIntegrationSettingFig (see GCBO)
+% --- Executes on key press with focus on BasicSettingFig or any of its controls.
+function BasicSettingFig_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to BasicSettingFig (see GCBO)
 % eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
 %	Key: name of the key that was pressed, in lower case
 %	Character: character interpretation of the key(s) that was pressed
@@ -202,27 +201,4 @@ function CueIntegrationSettingFig_WindowKeyPressFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if strcmp(eventdata.Key, 'return')
     buttonOK_Callback(hObject, eventdata, handles);
-end
-
-
-
-function locationNum_Callback(hObject, eventdata, handles)
-% hObject    handle to locationNum (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of locationNum as text
-%        str2double(get(hObject,'String')) returns contents of locationNum as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function locationNum_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to locationNum (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
 end

@@ -1,4 +1,4 @@
-function PEOddBasicCTStiFcn(device)
+function PEOddCueIntegrationCTStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -41,6 +41,7 @@ configureCallback(device, 'byte', 1, DTO.callbackFcn);
 %% Generate oddball sequence
 params.freq = [];
 params.Int = [];
+params.location = [];
 params.att = [];
 params.num = [];
 params.ISI = [];
@@ -59,16 +60,20 @@ for trialN = 1:sweepCountMax*2
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
     
     % cue type (cue integration protocol used only)
-    cueTypeStr = {'freq', 'intensity', 'double'};
-    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio intensityTrialRatio doubleTrialRatio] / 100])};
-    nCueType = length(find([freqTrialRatio intensityTrialRatio doubleTrialRatio] ~= 0));
+    cueTypeStr = {'freq', 'location', 'double'};
+    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio locationTrialRatio doubleTrialRatio] / 100])};
+    nCueType = length(find([freqTrialRatio locationTrialRatio doubleTrialRatio] ~= 0));
 
     % std freq
     if randomStdFreqFlag
         frequencyStd = (200 + randperm(100, 1)) * 16;
     end
     
+    % std location
+    locationStd = 0;
+
     % difference level
+
     % Calibration of prob for used cueType
     pControl = 1 / ((1 / freqDiffProb(1) - 1) * nCueType + 1);
     diffProb = [pControl; (1 - pControl) * freqDiffProb(2:end) / (1 - freqDiffProb(1))];
@@ -82,11 +87,13 @@ for trialN = 1:sweepCountMax*2
     end
 
     % dev intensity
-    if strcmp(intensityIncOrDec, 'intensityInc')
-        intensityDev = intensityStd + intensityMinDiff * diffLevel;
-    else
-        intensityDev = intensityStd - intensityMinDiff * diffLevel;
+    intensityDev = intensityStd;
+    
+    % dev location
+    if locationNum ~= length(diffProb) % location number should be same as number of frequency
+        locationNum = length(diffProb);
     end
+    locationDev = randsrc(1, 1, [0:locationNum-1; ones(1, locationNum) * 1/locationNum]);
     
     % TODO: dev duration
     % durationDev = durationStd;
@@ -102,22 +109,23 @@ for trialN = 1:sweepCountMax*2
     
     switch cueType
         case 'freq'
-            intensityDev = intensityStd;
+            locationDev = locationStd;
             
             if frequencyDev == frequencyStd
                 oddballType = 'STD';
             end
             
-        case 'intensity'
+        case 'location'
             frequencyDev = frequencyStd;
             
-            if intensityDev == intensityStd
+            if locationDev == locationStd
                 oddballType = 'STD';
             end
             
         case 'double'
             
-            if frequencyDev == frequencyStd && intensityDev == intensityStd
+            locationDev = diffLevel; % the diff level of location and frequency should be same
+            if frequencyDev == frequencyStd && locationDev == locationStd
                 oddballType = 'STD';
             end
             
@@ -132,6 +140,7 @@ for trialN = 1:sweepCountMax*2
 
     % determine sequence
     freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
+    locationSeq = [ones(1, stdNum) * locationStd, locationDev];
     intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
     attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
     % durSeq = [ones(1, stdNum) * durationStd, durationDev];
@@ -139,6 +148,7 @@ for trialN = 1:sweepCountMax*2
     % integrate stim parameters
     params.freq = [params.freq ; freqSeq'];
     params.Int = [params.Int ; intensitySeq'];
+    params.location = [params.location ; locationSeq'];
     params.att = [params.att ; reshape(attSeq,[length(attSeq),1])];
     params.num = [params.num ; (1:stdNum+1)'];
     params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
@@ -246,7 +256,7 @@ end
     % trig current trial
     %         obj.write('sweep', sweepCount);
   if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= stdNum
-      stiCount = stiCount + 1;
+      stiCount = stiCount + 1
 %       disp([soundType, ': ', num2str(stiCount)]);
       
 %       disp(['stdNum = ' num2str(stdNum)]);
@@ -265,6 +275,7 @@ end
             case 'noise'
                 
         end
+%         obj.write('numAll', soundNum(sweepCount));
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic

@@ -5,7 +5,7 @@ function attenuationSeq = CalAttenuation(position, soundType, freqSeq, intensity
     if ~isempty(varargin)
         intensityFile = varargin{1}; % Use the preloaded intensity file if it exists
     else
-        intensityFile = loadIntensityFile(position, soundType);
+        intensityFile = LoadIntensityFile(position, soundType);
     end
 
     if strcmp(soundType, 'noise')

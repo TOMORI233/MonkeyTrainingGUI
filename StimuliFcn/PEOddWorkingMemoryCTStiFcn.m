@@ -1,4 +1,4 @@
-function PEOddBasicCTStiFcn(device)
+function PEOddWorkingMemoryCTStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -131,8 +131,8 @@ for trialN = 1:sweepCountMax*2
     end
 
     % determine sequence
-    freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
-    intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
+    freqSeq = [ones(1, stdNum) * frequencyStdDev(1), 0, frequencyStdDev(2)]; % set 0 to make the interval between last std and dev as 1s
+    intensitySeq = [ones(1, stdNum) * intensityStd, 0, intensityDev];
     attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
     % durSeq = [ones(1, stdNum) * durationStd, durationDev];
     
@@ -140,11 +140,11 @@ for trialN = 1:sweepCountMax*2
     params.freq = [params.freq ; freqSeq'];
     params.Int = [params.Int ; intensitySeq'];
     params.att = [params.att ; reshape(attSeq,[length(attSeq),1])];
-    params.num = [params.num ; (1:stdNum+1)'];
-    params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
+    params.num = [params.num ; (1:stdNum+2)'];
+    params.ISI = [params.ISI ; ones(stdNum+2,1)*ISI];
     
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
-    soundNum = [soundNum ; stdNum+1];
+    soundNum = [soundNum ; stdNum+2];
     
 end
 params.soundNum = soundNum;
@@ -246,7 +246,7 @@ end
     % trig current trial
     %         obj.write('sweep', sweepCount);
   if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= stdNum
-      stiCount = stiCount + 1;
+      stiCount = stiCount + 1
 %       disp([soundType, ': ', num2str(stiCount)]);
       
 %       disp(['stdNum = ' num2str(stdNum)]);
@@ -265,6 +265,7 @@ end
             case 'noise'
                 
         end
+%         obj.write('numAll', soundNum(sweepCount));
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic

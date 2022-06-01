@@ -36,7 +36,7 @@ function GeneralSerialFcn(device, ~)
         if trialStartFlag
             pushInTrialFlag = true;
 
-            if stiCount <= stdNum
+            if stiCount <= stdNum || time2LastSound <= choiceWindow(1)
                 % interruption
                 disp('interrupt');
                 disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
@@ -46,8 +46,7 @@ function GeneralSerialFcn(device, ~)
                 obj.write('intrpt', 1);
                 obj.write('intrpt', 0);
                 obj.write('error', 1);
-%                 sweepCount = sweepCount + 1;
-                sweepCountMax = sweepCountMax + 1;
+                addSweepCount = addSweepCount + 1;
             else
                 % dev correct
 %                 if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')

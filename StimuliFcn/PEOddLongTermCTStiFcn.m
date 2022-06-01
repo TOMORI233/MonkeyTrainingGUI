@@ -23,7 +23,7 @@ DTO.vars.firstOnset2LastOnset = 0;
 DTO.vars.time2LastSound = 0;
 DTO.vars.transFlag = 0;
 DTO.vars.sessionStart = 0;
-
+DTO.vars.addSweepCount = 0;
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -45,7 +45,7 @@ configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
 %% Generate oddball sequence
 params.freq = [];
-params.Dur = [];
+params.Int = [];
 params.att = [];
 params.num = [];
 params.ISI = [];
@@ -153,7 +153,7 @@ for trialN = 1:sweepCountMax*2
 
     % integrate stim parameters
     params.freq = [params.freq ; freqSeq'];
-    params.Dur = [params.Dur ; intensitySeq'];
+    params.Int = [params.Int ; intensitySeq'];
     params.att = [params.att ; reshape(attSeq,[length(attSeq),1])];
     params.num = [params.num ; (1:stdNum+1)'];
     params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
@@ -211,7 +211,7 @@ for index = 1:size(varsNames, 1)
 end
 
 %% Idle
-if sweepCount > sweepCountMax
+if sweepCount > sweepCountMax + addSweepCount
     disp('Reach max sweep count');
     obj.idle;
     configureCallback(device, 'off');
@@ -284,7 +284,6 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
             case 'noise'
 
         end
-        obj.write('numAll', soundNum(sweepCount));
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic

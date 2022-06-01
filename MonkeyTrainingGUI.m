@@ -52,7 +52,7 @@ function MonkeyTrainingGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to MonkeyTrainingGUI (see VARARGIN)
 
-addpath(genpath(mfilename('fullpath')));
+addpath(genpath(fileparts(mfilename('fullpath'))));
 warning off;
 load('protocolList.mat', 'protocolList');
 searchResult = protocolList;

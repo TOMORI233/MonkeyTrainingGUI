@@ -20,6 +20,7 @@ DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
 DTO.vars.firstOnset2LastOnset = 0;
 DTO.vars.time2LastSound = 0; % for choice win based on tic-toc
+DTO.vars.addSweepCount = 0;
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -43,7 +44,7 @@ run('clickTrainAttIdx2.m')
 %% Generate oddball sequence
 params.freq1 = [];
 params.freq2 = [];
-params.Dur = [];
+params.Int = [];
 params.att = [];
 params.num = [];
 params.ISI = [];
@@ -100,6 +101,7 @@ for trialN = 1:sweepCountMax*2
             while stdFreq < 500
                     stdFreq = normrnd(4000,1000);
             end
+            stdFreq = 3920;
             devFreq = stdFreq * 1.2;
 
             order = [ones(stdNum,1)*stdOrder;curOrder];
@@ -150,7 +152,7 @@ for trialN = 1:sweepCountMax*2
     % integrate stim parameters
     params.freq1 = [params.freq1 ; ones(stdNum+1, 1) * stdFreq ];
     params.freq2 = [params.freq2 ; ones(stdNum+1, 1) * devFreq ];
-    params.Dur = [params.Dur ; intensitySeq'];
+    params.Int = [params.Int ; intensitySeq'];
     params.att = [params.att ; att];
     params.num = [params.num ; (1:stdNum+1)'];
     params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
@@ -208,7 +210,7 @@ for index = 1:size(varsNames, 1)
 end
 
 %% Idle
-if sweepCount > sweepCountMax
+if sweepCount > sweepCountMax + addSweepCount
     disp('Reach max sweep count');
     obj.idle;
     configureCallback(device, 'off');
@@ -293,6 +295,8 @@ end
 % Std trial correct
 
 if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+% if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+
     obj.write('W', rewardTimeCorrect);
     if sweepCount > 200
         obj.write('W', rewardTimeCorrect*1.3);

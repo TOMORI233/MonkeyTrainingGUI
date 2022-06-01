@@ -47,7 +47,7 @@ function OffsetChoiceWinlSerialFcn(device, ~)
                 obj.write('intrpt', 0);
                 obj.write('error', 1);
 %                 sweepCount = sweepCount + 1;
-                sweepCountMax = sweepCountMax + 1;
+                addSweepCount = addSweepCount + 1;
             else
                 % dev correct
 %                 if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')
