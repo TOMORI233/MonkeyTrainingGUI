@@ -28,7 +28,7 @@ function [passOrNot, errorMsg] = ValidateParams(params)
     % Use try...catch...end for every single protocol params validation
     try
         % Protocol Name: Cue Integration
-        if abs(params.freqTrialRatio + params.intensityTrialRatio + params.doubleTrialRatio -100) > sqrt(eps)
+        if abs(params.freqTrialRatio + params.locationTrialRatio + params.doubleTrialRatio -100) > sqrt(eps)
             errorMsg = [errorMsg; ' '; {'- Cue Integtation Setting: Sum of ratio ~= 100%'}];
         end
 

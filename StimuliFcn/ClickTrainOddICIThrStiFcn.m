@@ -1,4 +1,4 @@
-function DemoStiFcn(device)
+function ClickTrainOddICIThrStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -18,9 +18,8 @@ DTO.vars.tCount = 0;
 DTO.vars.time2LastSound = 0;
 DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
-DTO.vars.oddballType = [];
 DTO.vars.firstOnset2LastOnset = 0;
-DTO.vars.time2LastSound = 0;
+DTO.vars.time2LastSound = 0; % for choice win based on tic-toc
 DTO.vars.addSweepCount = 0;
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
@@ -38,12 +37,18 @@ if offsetChoiceWinFlag
 end
 configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
+shengqiang=xlsread('Documents\Intensity Files\speaker0oclickTrain.xlsx', 1, 'A2:E40'); %´¿Òô
+att0=[shengqiang(:,1) shengqiang(:,4)];%%
+run('clickTrainAttIdx2.m')
+
 %% Generate oddball sequence
-params.freq = [];
-params.Dur = [];
+params.freq1 = [];
+params.freq2 = [];
+params.Int = [];
 params.att = [];
 params.num = [];
 params.ISI = [];
+params.order = [];
 oddballTypeAll = [];
 soundNum = [];
 
@@ -54,97 +59,46 @@ for index = 1:size(varsNames, 1)
     eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
 end
 
+% TODO: random ISI
+ISI = ISI_average;
+ISIInTrial = ISI;
+
+ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = [];
 for trialN = 1:sweepCountMax*2
     % std number
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
+    % click train odd seq type
+    orderSSA = [1 1; 1 2; 1 3; 1 4; 1 5; 6 6; 6 10];
+    orders = [1 2 3 4 5 6 7];
+    orderProb=ones(1,7)/7;
+    orderIdx = randsrc(1,1,[orders; orderProb]);
+    stdOrder = orderSSA(orderIdx,1);
+    curOrder = orderSSA(orderIdx,2);
+    stdAtt = attIdx(stdOrder);
+    curAtt = attIdx(curOrder);
 
-    % cue type (cue integration protocol used only)
-    cueTypeStr = {'freq', 'intensity', 'double'};
-    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio intensityTrialRatio doubleTrialRatio] / 100])};
-    nCueType = length(find([freqTrialRatio intensityTrialRatio doubleTrialRatio] ~= 0));
+    order = [ones(stdNum,1)*stdOrder;curOrder];
+    att = [ones(stdNum,1)*stdAtt;curAtt];
+    ISICur = ISIInTrial;
+end
 
-    % std freq
-    if randomStdFreqFlag
-        frequencyStd = (200 + randperm(100, 1)) * 16;
-    end
-
-    % difference level
-    % Calibration of prob for used cueType
-    pControl = 1 / ((1 / freqDiffProb(1) - 1) * nCueType + 1);
-    diffProb = [pControl; (1 - pControl) * freqDiffProb(2:end) / (1 - freqDiffProb(1))];
-    diffLevel = randsrc(1, 1, [0:(length(diffProb) - 1); diffProb']);
-
-    % dev freq
-    if strcmp(freqIncOrDec, 'freqInc')
-        frequencyDev = frequencyStd * freqBaseDiffRatio^diffLevel;
-    else
-        frequencyDev = frequencyStd / freqBaseDiffRatio^diffLevel;
-    end
-
-    % dev intensity
-    if strcmp(intensityIncOrDec, 'intensityInc')
-        intensityDev = intensityStd + intensityMinDiff * diffLevel;
-    else
-        intensityDev = intensityStd - intensityMinDiff * diffLevel;
-    end
-
-    % TODO: dev duration
-    % durationDev = durationStd;
-
-    % TODO: random ISI
-    ISI = ISI_average;
-
-    % TODO: random position
-    %
-
-    % determine oddball trial type
+% determine oddball trial type
+if curOrder == stdOrder
+    oddballType = 'STD';
+else
     oddballType = 'DEV';
+end
 
-    switch cueType
-        case 'freq'
-            intensityDev = intensityStd;
-
-            if frequencyDev == frequencyStd
-                oddballType = 'STD';
-            end
-
-        case 'intensity'
-            frequencyDev = frequencyStd;
-
-            if intensityDev == intensityStd
-                oddballType = 'STD';
-            end
-
-        case 'double'
-
-            if frequencyDev == frequencyStd && intensityDev == intensityStd
-                oddballType = 'STD';
-            end
-
-    end
-
-    % reverse STD and DEV
-    if fixedDevFlag
-        frequencyStdDev = [frequencyStd ^ 2 / frequencyDev, frequencyStd];
-    else
-        frequencyStdDev = [frequencyStd, frequencyDev];
-    end
-
-    % determine sequence
-    freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
-    intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
-    attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
-    % durSeq = [ones(1, stdNum) * durationStd, durationDev];
-
-    % integrate stim parameters
-    params.freq = [params.freq ; freqSeq'];
-    params.Dur = [params.Dur ; intensitySeq'];
-    params.att = [params.att ; reshape(attSeq,[length(attSeq),1])];
-    params.num = [params.num ; (1:stdNum+1)'];
-    params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
-
-    oddballTypeAll = [oddballTypeAll ; {oddballType}];
-    soundNum = [soundNum ; stdNum+1];
+% integrate stim parameters
+params.freq1 = [params.freq1 ; ones(stdNum+1, 1) * stdFreq ];
+params.freq2 = [params.freq2 ; ones(stdNum+1, 1) * devFreq ];
+params.Int = [params.Int ; intensitySeq'];
+params.att = [params.att ; att];
+params.num = [params.num ; (1:stdNum+1)'];
+params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
+params.order = [params.order ; order];
+oddballTypeAll = [oddballTypeAll ; {oddballType}];
+soundNum = [soundNum ; stdNum+1];
 
 end
 params.soundNum = soundNum;
@@ -172,7 +126,6 @@ set(device, 'UserData', DTO);
 start(mTimer);
 DTO.obj.record;
 % DTO.obj.preview;
-
 end
 
 %% TimerFcn
@@ -199,7 +152,7 @@ end
 
 
 %% TODO: Stimulus
-% tCount = tCount + 1; % period = 0.02;
+% tCount = tCount + 1;
 tCount = toc(sessionStart) / DTO.period; % period = 0.02;
 time2LastSound = toc*1000 -firstOnset2LastOnset;
 % Punish for not starting, for ACTIVE
@@ -210,6 +163,7 @@ end
 % Trial started by monkey
 if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInterval / period
     sweepCount = sweepCount + 1;
+
     % Idle
     if sweepCount > sweepCountMax + addSweepCount
         disp('Reach max sweep count');
@@ -217,15 +171,21 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
         configureCallback(device, 'off');
         delete(timerfind);
     end
+
     % time to devonset
     if sweepCount == 1
         obj.write('waterDelay', waterDelayTimeDev);
-        idx = 1: (soundNum(1)-1);
+        idx = 1:soundNum(1)-1;
     else
         idx = (1:soundNum(sweepCount)-1) + sum(soundNum(1 : sweepCount - 1));
     end
 
+
     firstOnset2LastOnset = sum(ISIAll(idx));
+
+
+
+
 
     % Reset flags
     pushInTrialFlag = false;
@@ -246,7 +206,7 @@ end
 % trig current trial
 %         obj.write('sweep', sweepCount);
 if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= stdNum
-    stiCount = stiCount + 1
+    stiCount = stiCount + 1;
     %       disp([soundType, ': ', num2str(stiCount)]);
 
     %       disp(['stdNum = ' num2str(stdNum)]);
@@ -265,21 +225,27 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
             case 'noise'
 
         end
-        %         obj.write('numAll', soundNum(sweepCount));
+        obj.write('Duration', durationStd);
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic
     end
 end
-% if stiCount == stdNum + 1
-%     toc
-% end
+
+
 
 % Std trial correct
-% std water time uncorrect, add ISI 20220520
-if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+
+if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+    % if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
 
     obj.write('W', rewardTimeCorrect);
+    if sweepCount > 200
+        obj.write('W', rewardTimeCorrect*1.1);
+    end
+    if sweepCount > 300
+        obj.write('W', rewardTimeCorrect*1.3);
+    end
     obj.write('water', 1);
     obj.write('water', 0);
     disp('std correct');

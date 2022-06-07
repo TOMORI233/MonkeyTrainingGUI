@@ -37,7 +37,7 @@ if offsetChoiceWinFlag
 end
 configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
-shengqiang=xlsread('G:\MonkeyTrainingGUI\Documents\Intensity Files\speaker0oclickTrain.xlsx', 1, 'A2:E40'); %¥ø“Ù
+shengqiang=xlsread('Documents\Intensity Files\speaker0oclickTrain.xlsx', 1, 'A2:E40'); %¥ø“Ù
 att0=[shengqiang(:,1) shengqiang(:,4)];%%
 run('clickTrainAttIdx2.m')
 
@@ -65,82 +65,28 @@ ISIInTrial = ISI;
 
 ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = [];
 for trialN = 1:sweepCountMax*2
-    type = randsrc(1,1,[seqType ; typeProb]);
     % std number
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
 
     % click train odd seq type
-    switch type
-        case 1 % SSA basic
-            orderSSA = [1 1; 1 2; 1 3; 1 4; 1 5; 6 6; 6 10];
-            orders = [1 2 3 4 5 6 7];
-            orderProb=ones(1,7)/7;
-            orderIdx = randsrc(1,1,[orders; orderProb]);
-            stdOrder = orderSSA(orderIdx,1);
-            curOrder = orderSSA(orderIdx,2);
-            stdAtt = attIdx(stdOrder);
-            curAtt = attIdx(curOrder);
-            
-            order = [ones(stdNum,1)*stdOrder;curOrder];
-            att = [ones(stdNum,1)*stdAtt;curAtt];
-            ISICur = ISIInTrial;
-        case 2 % SSA Working memory
-            orderSSA = [1 1; 1 3; 6 6; 6 8; 11 11; 11 12; 15 15; 15 16; 19 19; 19 20];
-            orders = [1 2 3 4 5 6 7 8 9 10];
-%             orderProb=ones(1,10)/10;
-%             orderProb= repmat([2/20 2/20],1,5);
-            orderProb= [2/15 3/15 2/15 3/15 0 0 0 0 2/15 3/15];
-%             orderProb= [0 0 1/2 1/2 0 0 0 0 0 0];
-            orderIdx = randsrc(1,1,[orders; orderProb]);
-            stdOrder = orderSSA(orderIdx,1);
-            curOrder = orderSSA(orderIdx,2);
-            stdAtt = attIdx(stdOrder);
-            curAtt = attIdx(curOrder);
 
-            stdFreq = normrnd(4000,1000);
-            while stdFreq < 500
-                    stdFreq = normrnd(4000,1000);
-            end
-            stdFreq = 3920;
-            devFreq = stdFreq * 1.2;
+    orderIdx = randsrc(1,1,[orders; orderProb]);
+    stdOrder = pairs(orderIdx,1);
+    curOrder = pairs(orderIdx,2);
+    stdAtt = attIdx(stdOrder);
+    curAtt = attIdx(curOrder);
 
-            order = [ones(stdNum,1)*stdOrder;curOrder];
-            att = [ones(stdNum,1)*stdAtt;curAtt];
-            ISICur = ISIInTrial;
-            %             s1Amp = 3;
-            %             s2Amp = s1Amp+s1Amp*0.5*(pul0seOn(order(1,1))/pulseOn(order(1,2))-1);
-        case 3 % SSA High order
-            orderSSA = [20 25; 25 20;95 100; 100 95; 20 20; 25 25; 95 95; 100 100];
-            orders = [1 2 3 4 5 6 7 8];
-            orderProb=ones(1,8)/8;
-            orderIdx = randsrc(1,1,[orders; orderProb]);
-            stdOrder = orderSSA(orderIdx,1);
-            curOrder = orderSSA(orderIdx,2);
-            stdAtt = attIdx(stdOrder);
-            curAtt = attIdx(curOrder);
-            order = [ones(stdNum,1)*stdOrder;curOrder];
-            att = [ones(stdNum,1)*stdAtt;curAtt];
-            ISICur = ISIInTrial;
-        case 4 % SSA Short
-            orderSSA = [1 6; 6 1; 1 1; 6 6;36 37; 37 36; 36 36; 37 37; 38 39; 39 38; 38 38; 39 39];
-            orders = [1 2 3 4 5 6 7 8 9 10 11 12];
-            orderProb=[1/8 1/8 1/24 1/24 1/8 1/8 1/24 1/24 1/8 1/8 1/24 1/24 ];
-            orderIdx = randsrc(1,1,[orders; orderProb]);
-            stdOrder = orderSSA(orderIdx,1);
-            curOrder = orderSSA(orderIdx,2);
-            order = [ones(stdNum,1)*stdOrder;curOrder];
-            ISICur = 500;
-        case 5 % SSA Scale
-            orderSSA = [1 6; 6 1; 1 1; 6 6;13 14; 14 13; 13 13; 14 14];
-            orders = [1 2 3 4 5 6 7 8];
-            orderProb=[1/5 1/5 1/20 1/20 1/5 1/5 1/20 1/20 ];
-            ISIs = [502 536 502 536 496 496 496 496];
-            orderIdx = randsrc(1,1,[orders; orderProb]);
-            stdOrder = orderSSA(orderIdx,1);
-            curOrder = orderSSA(orderIdx,2);
-            order = [ones(stdNum,1)*stdOrder;curOrder];
-            ISICur = ISIs(orderIdx);
+    stdFreq = normrnd(4000,1000);
+    while stdFreq < 500
+        stdFreq = normrnd(4000,1000);
     end
+    stdFreq = 3920;
+    devFreq = stdFreq * 1.2;
+    order = [ones(stdNum,1)*stdOrder;curOrder];
+    att = [ones(stdNum,1)*stdAtt;curAtt];
+    ISICur = ISIInTrial;
+
+
 
     % determine oddball trial type
     if curOrder == stdOrder
@@ -159,8 +105,8 @@ for trialN = 1:sweepCountMax*2
     params.order = [params.order ; order];
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
     soundNum = [soundNum ; stdNum+1];
-
 end
+
 params.soundNum = soundNum;
 DTO.vars.oddballTypeAll = oddballTypeAll;
 DTO.vars.soundNum = soundNum;
@@ -209,13 +155,7 @@ for index = 1:size(varsNames, 1)
     eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
 end
 
-%% Idle
-if sweepCount > sweepCountMax + addSweepCount
-    disp('Reach max sweep count');
-    obj.idle;
-    configureCallback(device, 'off');
-    delete(timerfind);
-end
+
 
 %% TODO: Stimulus
 % tCount = tCount + 1;
@@ -229,6 +169,14 @@ end
 % Trial started by monkey
 if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInterval / period
     sweepCount = sweepCount + 1;
+
+    % Idle
+    if sweepCount > sweepCountMax + addSweepCount
+        disp('Reach max sweep count');
+        obj.idle;
+        configureCallback(device, 'off');
+        delete(timerfind);
+    end
 
     % time to devonset
     if sweepCount == 1
@@ -295,14 +243,14 @@ end
 % Std trial correct
 
 if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
-% if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+    % if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
 
     obj.write('W', rewardTimeCorrect);
     if sweepCount > 200
-        obj.write('W', rewardTimeCorrect*1.3);
+        obj.write('W', rewardTimeCorrect*1.1);
     end
     if sweepCount > 300
-        obj.write('W', rewardTimeCorrect*1.6);
+        obj.write('W', rewardTimeCorrect*1.3);
     end
     obj.write('water', 1);
     obj.write('water', 0);

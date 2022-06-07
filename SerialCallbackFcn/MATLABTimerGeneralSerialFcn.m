@@ -1,4 +1,4 @@
-function GeneralSerialFcn(device, ~)
+function MATLABTimerGeneralSerialFcn(device, ~)
     %% Read 1 byte data from serialport
     res = read(device, 1, 'uint8');
     %% Get constants and variables
@@ -24,10 +24,10 @@ function GeneralSerialFcn(device, ~)
         disp('push - rising edge');
 
         %% Punishment off
-        obj.write('T', 0);
+        % obj.write('T', 0);
 
         %% Trial started by monkey (Used when rising egde detected only)
-        if ~trialStartFlag && tCount >= lastStiOnsetTime + delayTime / period
+        if ~trialStartFlag && tCount >= max([lastStiOnsetTime pushTime]) + delayTime / period
             pushAfterDelayFlag = true;
         end
         pushTime = tCount;
@@ -36,37 +36,28 @@ function GeneralSerialFcn(device, ~)
         if trialStartFlag
             pushInTrialFlag = true;
 
-            if stiCount <= stdNum || time2LastSound <= choiceWindow(1)
+            if stiCount <= stdNum
                 % interruption
                 disp('interrupt');
-                disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
-                offTime = (soundNum(sweepCount)-stiCount)*ISI + delayTime/2;
-                disp(['offTime = ' num2str(offTime)]);
-                obj.write('offTime', offTime);
-                obj.write('intrpt', 1);
-                obj.write('intrpt', 0);
+                offTime = ((numAllall(sweepCount)-stiCount)*ISI + delayTime/2);
+                obj.TD.write('offTime', offTime);
+                obj.TD.write('intrpt', 1);
+                obj.TD.write('intrpt', 0);
                 obj.write('error', 1);
+                trialStartFlag = false;
                 addSweepCount = addSweepCount + 1;
             else
                 % dev correct
-%                 if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')
-                if time2LastSound >=  choiceWindow(1)  && time2LastSound <= choiceWindow(2) && strcmp(oddballType, 'DEV')
+                if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')
                     disp('dev correct');
-
                     obj.write('W', rewardTimeCorrect);
-                    if sweepCount > 200
-                        obj.write('W', rewardTimeCorrect*1.1);
-                    end
-                    if sweepCount > 300
-                        obj.write('W', rewardTimeCorrect*1.3);
-                    end
                     obj.write('water', 1);
                     obj.write('water', 0);
+                    trialStartFlag = false;
                 end
 
             end
-            
-            trialStartFlag = false;
+
         end
 
         obj.write('push', 1);
@@ -80,7 +71,7 @@ function GeneralSerialFcn(device, ~)
 %         disp('push - falling edge');
 % 
 %         %% Trial started by monkey
-%         if ~trialStartFlag && tCount >= lastStiOnsetTime + delayTime / period
+%         if ~trialStartFlag && tCount >= max([lastStiOnsetTime pushTime]) + delayTime / period
 %             pushAfterDelayFlag = true;
 %         end
 % 

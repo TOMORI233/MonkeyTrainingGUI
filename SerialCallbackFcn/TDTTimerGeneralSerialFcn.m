@@ -1,4 +1,4 @@
-function GeneralSerialFcn(device, ~)
+function TDTTimerGeneralSerialFcn(device, ~)
     %% Read 1 byte data from serialport
     res = read(device, 1, 'uint8');
     %% Get constants and variables

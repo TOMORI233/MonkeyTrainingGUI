@@ -210,14 +210,6 @@ for index = 1:size(varsNames, 1)
     eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
 end
 
-%% Idle
-if sweepCount > sweepCountMax + addSweepCount
-    disp('Reach max sweep count');
-    obj.idle;
-    configureCallback(device, 'off');
-    delete(timerfind);
-end
-
 %% TODO: Stimulus
 % tCount = tCount + 1;
 tCount = toc(sessionStart) / DTO.period; % period = 0.02;
@@ -230,7 +222,13 @@ end
 % Trial started by monkey
 if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInterval / period
     sweepCount = sweepCount + 1;
-
+    % Idle
+    if sweepCount > sweepCountMax + addSweepCount
+        disp('Reach max sweep count');
+        obj.idle;
+        configureCallback(device, 'off');
+        delete(timerfind);
+    end
     % time to devonset
     if sweepCount == 1
         obj.write('waterDelay', waterDelayTimeDev);

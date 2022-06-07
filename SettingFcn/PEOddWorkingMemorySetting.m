@@ -1,35 +1,35 @@
-function varargout = BasicSetting(varargin)
-% BASICSETTING MATLAB code for BasicSetting.fig
-%      BASICSETTING, by itself, creates a new BASICSETTING or raises the existing
+function varargout = PEOddWorkingMemorySetting(varargin)
+% PEODDWORKINGMEMORYSETTING MATLAB code for PEOddWorkingMemorySetting.fig
+%      PEODDWORKINGMEMORYSETTING, by itself, creates a new PEODDWORKINGMEMORYSETTING or raises the existing
 %      singleton*.
 %
-%      H = BASICSETTING returns the handle to a new BASICSETTING or the handle to
+%      H = PEODDWORKINGMEMORYSETTING returns the handle to a new PEODDWORKINGMEMORYSETTING or the handle to
 %      the existing singleton*.
 %
-%      BASICSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in BASICSETTING.M with the given input arguments.
+%      PEODDWORKINGMEMORYSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in PEODDWORKINGMEMORYSETTING.M with the given input arguments.
 %
-%      BASICSETTING('Property','Value',...) creates a new BASICSETTING or raises the
+%      PEODDWORKINGMEMORYSETTING('Property','Value',...) creates a new PEODDWORKINGMEMORYSETTING or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before BasicSetting_OpeningFcn gets called.  An
+%      applied to the GUI before PEOddWorkingMemorySetting_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to BasicSetting_OpeningFcn via varargin.
+%      stop.  All inputs are passed to PEOddWorkingMemorySetting_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help BasicSetting
+% Edit the above text to modify the response to help PEOddWorkingMemorySetting
 
-% Last Modified by GUIDE v2.5 01-Jun-2022 10:20:25
+% Last Modified by GUIDE v2.5 07-Jun-2022 22:01:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @BasicSetting_OpeningFcn, ...
-                   'gui_OutputFcn',  @BasicSetting_OutputFcn, ...
+                   'gui_OpeningFcn', @PEOddWorkingMemorySetting_OpeningFcn, ...
+                   'gui_OutputFcn',  @PEOddWorkingMemorySetting_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,13 +44,13 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before BasicSetting is made visible.
-function BasicSetting_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before PEOddWorkingMemorySetting is made visible.
+function PEOddWorkingMemorySetting_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to BasicSetting (see VARARGIN)
+% varargin   command line arguments to PEOddWorkingMemorySetting (see VARARGIN)
 
 if ~isempty(varargin)
     paramsLoad = varargin{1};
@@ -63,18 +63,18 @@ if ~isempty(varargin)
     end
 end
 
-% Choose default command line output for BasicSetting
+% Choose default command line output for PEOddWorkingMemorySetting
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes BasicSetting wait for user response (see UIRESUME)
+% UIWAIT makes PEOddWorkingMemorySetting wait for user response (see UIRESUME)
 uiwait(handles.BasicSettingFig);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = BasicSetting_OutputFcn(hObject, eventdata, handles) 
+function varargout = PEOddWorkingMemorySetting_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
