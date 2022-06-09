@@ -56,9 +56,9 @@ if ~isempty(varargin)
     paramsLoad = varargin{1};
     try
         %% TODO: Initiate your params here
-        set(handles.pairs, 'string', num2str(paramsLoad.pairs));
+%         set(handles.pairs, 'string', num2str(paramsLoad.pairs));
         set(handles.orders, 'string', num2str(paramsLoad.orders));
-        set(handles.orderProb, 'string', num2str(paramsLoad.orderProb));
+        set(handles.orderProb, 'string', num2str(rats(paramsLoad.orderProb, 3)));
     catch
 %         msgbox('Params MISSING!');
     end

@@ -142,7 +142,7 @@ for trialN = 1:sweepCountMax*2
     freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
     locationSeq = [ones(1, stdNum) * locationStd, locationDev];
     intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
-    attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
+    attSeq = CalAttenuation(stiPosition, 'complexToneSmall', freqSeq, intensitySeq, intensityFile);
     % durSeq = [ones(1, stdNum) * durationStd, durationDev];
 
     % integrate stim parameters

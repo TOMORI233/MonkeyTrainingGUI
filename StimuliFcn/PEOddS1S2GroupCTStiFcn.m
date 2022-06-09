@@ -1,4 +1,4 @@
-function PEOddWhatWhenCTStiFcn(device)
+function PEOddS1S2GroupCTStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -20,7 +20,6 @@ DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
 DTO.vars.oddballType = [];
 DTO.vars.addSweepCount = 0;
-
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -120,9 +119,8 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']); % Random std number based on stdNumProb
 
     % cue type (cue integration protocol used only)
-    cueTypeStr = {'freq', 'location', 'double'};
-    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio locationTrialRatio doubleTrialRatio] / 100])};
-    nCueType = length(find([freqTrialRatio locationTrialRatio doubleTrialRatio] ~= 0));
+    cueType = 'freq';
+    nCueType = 1
 
     % std freq
     if randomStdFreqFlag
@@ -150,99 +148,47 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     intensityDev = intensityStd;
 
     % dev location
-    if locationNum ~= length(diffProb) % location number should be same as number of frequency
-        locationNum = length(diffProb);
-    end
-    locationDev = diffLevel; % the diff level of location and frequency should be same
+
 
     % TODO: dev duration
     % durationDev = durationStd;
 
     % TODO: random ISI
-    ISI = ISI_average;
+
 
     % TODO: random position
     %
 
     % determine oddball trial type
     oddballType = 'DEV';
-
-
-    switch cueType
-        case 'freq'
-            locationDev = locationStd;
-
-            if frequencyDev == frequencyStd
-                oddballType = 'STD';
-            end
-
-        case 'location'
-            frequencyDev = frequencyStd;
-
-            if locationDev == locationStd
-                oddballType = 'STD';
-            end
-
-        case 'double'
-
-
-            if frequencyDev == frequencyStd && locationDev == locationStd
-                oddballType = 'STD';
-            end
-
-    end
-
-
-
-    % reverse STD and DEV
-    if fixedDevFlag
-        frequencyStdDev = [frequencyStd ^ 2 / frequencyDev, frequencyStd];
-    else
-        frequencyStdDev = [frequencyStd, frequencyDev];
+    if frequencyDev == frequencyStd
+        oddballType = 'STD';
     end
 
     % determine sequence
-    freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
-    intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
+    freqSeq = ones(1, 2 * stdNum) * frequencyStd;
+    freqSeq(1:2:end) = frequencyStd * freq2StdRatio;
+    freqSeq = [freqSeq, frequencyStd * freq2StdRatio, frequencyDev];
+    intensitySeq = [ones(1, 2 * stdNum ) * intensityStd, intensityStd, intensityDev];
     attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
+    ISISeq = ones(1, 2 * stdNum) * IntervalInGroup;
+    ISISeq(2:2:end) = IntervalOutGroup;
+    ISISeq = [0, ISISeq, IntervalInGroup, IntervalOutGroup];
     
     % durSeq = [ones(1, stdNum) * durationStd, durationDev];
-    
-    % random what or when
-    freqStdCopy = frequencyStdDev(1);
-    lowHighFreqRange = freqVar * freqStdCopy;
-    ISICopy = ISI_average;
-    lowHighISIRange = ISIVar * ISICopy;
-
-    switch randType
-        case 'what'
-           freqRandPool = 0;
-        while any(freqRandPool < lowHighFreqRange(1) | freqRandPool > lowHighFreqRange(2)) % all random frequency should in lowHighLimitRange
-            freqRandPool = normrnd(freqStdCopy , standardDeviation * freqStdCopy, [stdNum , 1]);
-        end
-        freqSeq = [ceil(freqRandPool'), frequencyStdDev(2)];
-        ISISeq = [0, ones(1, stdNum) * ISI_average, 0];
-        case 'when'
-        ISIRandPool = 0;
-        while any(ISIRandPool < lowHighISIRange(1) | ISIRandPool > lowHighISIRange(2)) % all random frequency should in lowHighLimitRange
-            ISIRandPool = normrnd(ISICopy , standardDeviation * ISICopy, [stdNum , 1]);
-        end
-        ISISeq = [0, ceil(ISIRandPool'), 0];
-        freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
-    end
 
     % Set flags
     trialStartFlag = true;
 
     disp(['Trial Start - ' num2str(sweepCount)]);
-    disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
+%     disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
 end
 
 
 
 
 % TODO: Present stimuli
-if trialStartFlag && tCount >= lastStiOnsetTime + ISISeq(stiCount + 1) / period && stiCount <= stdNum
+if trialStartFlag && tCount >= lastStiOnsetTime + ISISeq(stiCount + 1) / period && stiCount <= 2 * stdNum + 1
     stiCount = stiCount + 1;
     lastStiOnsetTime = tCount;
     obj.write('sweep', sweepCount);
@@ -268,7 +214,7 @@ end
 
 
 % Std trial correct
-if trialStartFlag && stiCount == stdNum + 1 && tCount >= lastStiOnsetTime + waterDelayTimeStd / period && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+if trialStartFlag && stiCount == 2 * (stdNum + 1) && tCount >= lastStiOnsetTime + waterDelayTimeStd / period && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     obj.write('W', rewardTimeCorrect);
     obj.write('water', 1);
     obj.write('water', 0);
@@ -278,7 +224,7 @@ end
 
 
 % Trial auto end
-if trialStartFlag && stiCount >= stdNum + 1 && tCount > lastStiOnsetTime  + max( offsetChoiceWinFlag * durationStd + [waterDelayTimeStd choiceWindow(2)]) / period
+if trialStartFlag && stiCount >= 2 * (stdNum + 1) && tCount > lastStiOnsetTime  + max( offsetChoiceWinFlag * durationStd + [waterDelayTimeStd choiceWindow(2)]) / period
 
     %     disp('trial auto end');
     trialStartFlag = false;

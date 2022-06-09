@@ -13,7 +13,9 @@ function attenuationSeq = CalAttenuation(position, soundType, freqSeq, intensity
     else
         attenuationSeq = interp1(intensityFile.frequency, intensityFile.intensity, freqSeq, 'linear') - intensitySeq;
     end
-
+    
+    
+    
     return;
 
 end

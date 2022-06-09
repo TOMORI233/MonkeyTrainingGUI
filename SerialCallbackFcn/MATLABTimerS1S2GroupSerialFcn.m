@@ -1,4 +1,4 @@
-function MATLABTimerGeneralSerialFcn(device, ~)
+function MATLABTimerS1S2GroupSerialFcn(device, ~)
     %% Read 1 byte data from serialport
     res = read(device, 1, 'uint8');
     %% Get constants and variables
@@ -36,7 +36,7 @@ function MATLABTimerGeneralSerialFcn(device, ~)
         if trialStartFlag
             pushInTrialFlag = true;
 
-            if stiCount <= stdNum
+            if stiCount <= 2 * stdNum + 1
                 % interruption
                 disp('interrupt');
                 obj.write('error', 1);

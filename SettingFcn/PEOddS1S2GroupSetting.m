@@ -1,35 +1,35 @@
-function varargout = PEOddWorkingMemorySetting(varargin)
-% PEODDWORKINGMEMORYSETTING MATLAB code for PEOddWorkingMemorySetting.fig
-%      PEODDWORKINGMEMORYSETTING, by itself, creates a new PEODDWORKINGMEMORYSETTING or raises the existing
+function varargout = PEOddS1S2GroupSetting(varargin)
+% PEODDS1S2GROUPSETTING MATLAB code for PEOddS1S2GroupSetting.fig
+%      PEODDS1S2GROUPSETTING, by itself, creates a new PEODDS1S2GROUPSETTING or raises the existing
 %      singleton*.
 %
-%      H = PEODDWORKINGMEMORYSETTING returns the handle to a new PEODDWORKINGMEMORYSETTING or the handle to
+%      H = PEODDS1S2GROUPSETTING returns the handle to a new PEODDS1S2GROUPSETTING or the handle to
 %      the existing singleton*.
 %
-%      PEODDWORKINGMEMORYSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in PEODDWORKINGMEMORYSETTING.M with the given input arguments.
+%      PEODDS1S2GROUPSETTING('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in PEODDS1S2GROUPSETTING.M with the given input arguments.
 %
-%      PEODDWORKINGMEMORYSETTING('Property','Value',...) creates a new PEODDWORKINGMEMORYSETTING or raises the
+%      PEODDS1S2GROUPSETTING('Property','Value',...) creates a new PEODDS1S2GROUPSETTING or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before PEOddWorkingMemorySetting_OpeningFcn gets called.  An
+%      applied to the GUI before PEOddS1S2GroupSetting_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to PEOddWorkingMemorySetting_OpeningFcn via varargin.
+%      stop.  All inputs are passed to PEOddS1S2GroupSetting_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help PEOddWorkingMemorySetting
+% Edit the above text to modify the response to help PEOddS1S2GroupSetting
 
-% Last Modified by GUIDE v2.5 09-Jun-2022 20:27:45
+% Last Modified by GUIDE v2.5 09-Jun-2022 20:46:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @PEOddWorkingMemorySetting_OpeningFcn, ...
-                   'gui_OutputFcn',  @PEOddWorkingMemorySetting_OutputFcn, ...
+                   'gui_OpeningFcn', @PEOddS1S2GroupSetting_OpeningFcn, ...
+                   'gui_OutputFcn',  @PEOddS1S2GroupSetting_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,38 +44,38 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before PEOddWorkingMemorySetting is made visible.
-function PEOddWorkingMemorySetting_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before PEOddS1S2GroupSetting is made visible.
+function PEOddS1S2GroupSetting_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to PEOddWorkingMemorySetting (see VARARGIN)
+% varargin   command line arguments to PEOddS1S2GroupSetting (see VARARGIN)
 
 if ~isempty(varargin)
     paramsLoad = varargin{1};
     try
-        set(handles.freqTrialRatio, 'string', num2str(paramsLoad.freqTrialRatio));
-        set(handles.intensityTrialRatio, 'string', num2str(paramsLoad.intensityTrialRatio));
-        set(handles.doubleTrialRatio, 'string', num2str(paramsLoad.doubleTrialRatio));
+        set(handles.freq2StdRatio, 'string', num2str(paramsLoad.freq2StdRatio));
+        set(handles.IntervalInGroup, 'string', num2str(paramsLoad.IntervalInGroup));
+        set(handles.IntervalOutGroup, 'string', num2str(paramsLoad.IntervalOutGroup));
         set(handles.lastStdToDev, 'string', num2str(paramsLoad.lastStdToDev));
     catch
 %         msgbox('Params MISSING!');
     end
 end
 
-% Choose default command line output for PEOddWorkingMemorySetting
+% Choose default command line output for PEOddS1S2GroupSetting
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes PEOddWorkingMemorySetting wait for user response (see UIRESUME)
-uiwait(handles.WorkingMemorySettingFig);
+% UIWAIT makes PEOddS1S2GroupSetting wait for user response (see UIRESUME)
+uiwait(handles.PEOddS1S2GroupSettingFig);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = PEOddWorkingMemorySetting_OutputFcn(hObject, eventdata, handles) 
+function varargout = PEOddS1S2GroupSetting_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -83,7 +83,7 @@ function varargout = PEOddWorkingMemorySetting_OutputFcn(hObject, eventdata, han
 
 % Get default command line output from handles structure
 % varargout{1} = handles.output;
-varargout{1} = getappdata(handles.WorkingMemorySettingFig, 'params');
+varargout{1} = getappdata(handles.PEOddS1S2GroupSettingFig, 'params');
 delete(hObject);
 
 
@@ -92,14 +92,14 @@ function buttonOK_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonOK (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-params.freqTrialRatio = str2double(get(handles.freqTrialRatio, 'String'));
-params.intensityTrialRatio = str2double(get(handles.intensityTrialRatio, 'String'));
-params.doubleTrialRatio = str2double(get(handles.doubleTrialRatio, 'String'));
+params.freq2StdRatio = str2double(get(handles.freq2StdRatio, 'String'));
+params.IntervalInGroup = str2double(get(handles.IntervalInGroup, 'String'));
+params.IntervalOutGroup = str2double(get(handles.IntervalOutGroup, 'String'));
 params.lastStdToDev = str2double(get(handles.lastStdToDev, 'String'));
 
-setappdata(handles.WorkingMemorySettingFig, 'params', params);
+setappdata(handles.PEOddS1S2GroupSettingFig, 'params', params);
 
-uiresume(handles.WorkingMemorySettingFig);
+uiresume(handles.PEOddS1S2GroupSettingFig);
 
 
 % --- Executes on button press in buttonCancel.
@@ -107,8 +107,8 @@ function buttonCancel_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonCancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-setappdata(handles.WorkingMemorySettingFig, 'params', []);
-uiresume(handles.WorkingMemorySettingFig);
+setappdata(handles.PEOddS1S2GroupSettingFig, 'params', []);
+uiresume(handles.PEOddS1S2GroupSettingFig);
 
 
 function freqTrialRatio_Callback(hObject, eventdata, handles)
@@ -179,9 +179,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes when user attempts to close WorkingMemorySettingFig.
-function WorkingMemorySettingFig_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to WorkingMemorySettingFig (see GCBO)
+% --- Executes when user attempts to close PEOddS1S2GroupSettingFig.
+function PEOddS1S2GroupSettingFig_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to PEOddS1S2GroupSettingFig (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -193,9 +193,9 @@ catch
 end
 
 
-% --- Executes on key press with focus on WorkingMemorySettingFig or any of its controls.
-function WorkingMemorySettingFig_WindowKeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to WorkingMemorySettingFig (see GCBO)
+% --- Executes on key press with focus on PEOddS1S2GroupSettingFig or any of its controls.
+function PEOddS1S2GroupSettingFig_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to PEOddS1S2GroupSettingFig (see GCBO)
 % eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
 %	Key: name of the key that was pressed, in lower case
 %	Character: character interpretation of the key(s) that was pressed

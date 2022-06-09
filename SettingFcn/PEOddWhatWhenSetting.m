@@ -22,7 +22,7 @@ function varargout = PEOddWhatWhenSetting(varargin)
 
 % Edit the above text to modify the response to help PEOddWhatWhenSetting
 
-% Last Modified by GUIDE v2.5 07-Jun-2022 22:10:56
+% Last Modified by GUIDE v2.5 09-Jun-2022 11:10:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ if ~isempty(varargin)
         set(handles.freqVar, 'string', num2str(paramsLoad.freqVar));
         set(handles.ISIVar, 'string', num2str(paramsLoad.ISIVar));
         set(handles.standardDeviation, 'string', num2str(paramsLoad.standardDeviation));
-        set(handles.type, 'SelectedObject', handles.(paramsLoad.type));
+        set(handles.randType, 'SelectedObject', handles.(paramsLoad.randType));
     catch
 %         msgbox('Params MISSING!');
     end
@@ -98,8 +98,8 @@ params.freqVar = eval(['[' get(handles.freqVar, 'string') ']']);
 params.ISIVar = eval(['[' get(handles.ISIVar, 'string') ']']);
 params.standardDeviation = eval(['[' get(handles.standardDeviation, 'string') ']']);
 % radio button group
-selectedRadio = get(handles.type, 'SelectedObject');
-params.type = get(selectedRadio, 'tag');
+selectedRadio = get(handles.randType, 'SelectedObject');
+params.randType = get(selectedRadio, 'tag');
 
 %% Save params to appdata
 setappdata(handles.DemoSettingFig, 'params', params);
@@ -195,8 +195,8 @@ end
 
 
 % --- Executes during object creation, after setting all properties.
-function type_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to type (see GCBO)
+function randType_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to randType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

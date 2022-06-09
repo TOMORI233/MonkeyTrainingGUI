@@ -8,8 +8,11 @@ function intensityFile = LoadIntensityFile(position, soundType)
                     fileAll = xlsread('Documents/Intensity Files/20191105-speaker4.xlsx', 1, 'A2:E27');
                 case 'complexTone'
                     fileAll = xlsread('Documents/Intensity Files/20200105.xlsx', 1, 'A2:E20');
+                case 'complexToneSmall'
+                    fileAll = xlsread('Documents/Intensity Files/speaker0oFloor4Right.xlsx', 1, 'A2:E20');
                 case 'noise'
                     intensityFile = xlsread('Documents/Intensity Files/20191105-speaker4.xlsx', 1, 'C28');
+                    
                     return;
             end
 
@@ -20,6 +23,8 @@ function intensityFile = LoadIntensityFile(position, soundType)
                     fileAll = xlsread('Documents/Intensity Files/tone_calibration_left.xlsx', 1, 'A2:E27');
                 case 'complexTone'
                     fileAll = xlsread('Documents/Intensity Files/fuza_calibration_left.xlsx', 1, 'A2:E20');
+                case 'complexToneSmall'
+                    fileAll = xlsread('Documents/Intensity Files/speaker0oFloor4Right.xlsx', 1, 'A2:E20');
                 case 'noise'
                     intensityFile = xlsread('Documents/Intensity Files/tone_calibration_left.xlsx', 1, 'C28');
                     return;

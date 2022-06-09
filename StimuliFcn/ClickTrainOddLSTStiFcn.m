@@ -1,4 +1,4 @@
-function ClickTrainOddStiFcn(device)
+function ClickTrainOddLSTStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -84,7 +84,6 @@ for trialN = 1:sweepCountMax*2
     devFreq = stdFreq * 1.2;
     order = [ones(stdNum,1)*stdOrder;curOrder];
     att = [ones(stdNum,1)*stdAtt;curAtt];
-    ISICur = ISIInTrial;
 
 
 
@@ -95,13 +94,35 @@ for trialN = 1:sweepCountMax*2
         oddballType = 'DEV';
     end
 
+    lowHighISIRange = ISIVar * ISIInTrial;
+    % sequency transform
+    if mod(trialN-1,transTrialNum) == 0
+        ISIRandPool = 0;
+        while any(ISIRandPool < lowHighISIRange(1) | ISIRandPool > lowHighISIRange(2)) % all random frequency should in lowHighLimitRange
+            ISIRandPool = normrnd(ISIInTrial , standardDeviation * ISIInTrial, [transTrialNum , 1]);
+        end
+        ISIRandPool = ceil(ISIRandPool + residual);
+        if mod( ceil(trialN/transTrialNum) , 2 ) % 1 : transTrial
+            transFlag = 0; % constant
+
+        else % transTrial+1 : 2 * transTrial
+            transFlag = 1; % random
+
+        end
+    end
+     if transFlag
+        ISICur = ISIRandPool(mod(trialN - 1,transTrialNum) + 1);;
+    else
+        ISICur = ISIInTrial;
+    end
+
     % integrate stim parameters
     params.freq1 = [params.freq1 ; ones(stdNum+1, 1) * stdFreq ];
     params.freq2 = [params.freq2 ; ones(stdNum+1, 1) * devFreq ];
     params.Int = [params.Int ; intensitySeq'];
     params.att = [params.att ; att];
     params.num = [params.num ; (1:stdNum+1)'];
-    params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
+    params.ISI = [params.ISI ; ones(stdNum+1,1)*ISICur];
     params.order = [params.order ; order];
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
     soundNum = [soundNum ; stdNum+1];
