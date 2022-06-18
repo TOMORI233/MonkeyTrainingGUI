@@ -120,9 +120,8 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']); % Random std number based on stdNumProb
 
     % cue type (cue integration protocol used only)
-    cueTypeStr = {'freq', 'location', 'double'};
-    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio locationTrialRatio doubleTrialRatio] / 100])};
-    nCueType = length(find([freqTrialRatio locationTrialRatio doubleTrialRatio] ~= 0));
+    cueType = 'freq';
+    nCueType = 1;
 
     % std freq
     if randomStdFreqFlag
@@ -150,10 +149,6 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     intensityDev = intensityStd;
 
     % dev location
-    if locationNum ~= length(diffProb) % location number should be same as number of frequency
-        locationNum = length(diffProb);
-    end
-    locationDev = diffLevel; % the diff level of location and frequency should be same
 
     % TODO: dev duration
     % durationDev = durationStd;
@@ -166,30 +161,10 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
 
     % determine oddball trial type
     oddballType = 'DEV';
-
-
-    switch cueType
-        case 'freq'
-            locationDev = locationStd;
-
-            if frequencyDev == frequencyStd
-                oddballType = 'STD';
-            end
-
-        case 'location'
-            frequencyDev = frequencyStd;
-
-            if locationDev == locationStd
-                oddballType = 'STD';
-            end
-
-        case 'double'
-
-
-            if frequencyDev == frequencyStd && locationDev == locationStd
-                oddballType = 'STD';
-            end
-
+    locationDev = locationStd;
+    
+    if frequencyDev == frequencyStd
+        oddballType = 'STD';
     end
 
 
@@ -214,7 +189,14 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     ISICopy = ISI_average;
     lowHighISIRange = ISIVar * ISICopy;
 
-    switch randType
+    
+    if mod( ceil(sweepCount/transTrialNum) , 2 ) % 1 : transTrial
+        transFlag = 0; % constant
+        ISISeq = [0, ones(1, stdNum) * ISI_average, 0];
+        freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
+    else % transTrial+1 : 2 * transTrial
+
+            switch randType
         case 'what'
            freqRandPool = 0;
         while any(freqRandPool < lowHighFreqRange(1) | freqRandPool > lowHighFreqRange(2)) % all random frequency should in lowHighLimitRange
@@ -225,12 +207,14 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
         case 'when'
         ISIRandPool = 0;
         while any(ISIRandPool < lowHighISIRange(1) | ISIRandPool > lowHighISIRange(2)) % all random frequency should in lowHighLimitRange
-            ISIRandPool = normrnd(ISICopy , standardDeviation * ISICopy, [stdNum , 1]);
+            ISIRandPool = normrnd(ISICopy , standardDeviation * ISICopy, [stdNum-1 , 1]);
         end
-        ISISeq = [0, ceil(ISIRandPool'), 0];
+        ISISeq = [0, ceil(ISIRandPool'), ISICopy, 0]
         freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
     end
-
+        
+    end
+    
     % Set flags
     trialStartFlag = true;
 

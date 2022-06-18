@@ -22,7 +22,7 @@ function varargout = PEOddWhatWhenSetting(varargin)
 
 % Edit the above text to modify the response to help PEOddWhatWhenSetting
 
-% Last Modified by GUIDE v2.5 09-Jun-2022 11:10:36
+% Last Modified by GUIDE v2.5 10-Jun-2022 16:47:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,9 +59,11 @@ if ~isempty(varargin)
         set(handles.freqVar, 'string', num2str(paramsLoad.freqVar));
         set(handles.ISIVar, 'string', num2str(paramsLoad.ISIVar));
         set(handles.standardDeviation, 'string', num2str(paramsLoad.standardDeviation));
+        set(handles.transTrialNum, 'string', num2str(paramsLoad.transTrialNum));
         set(handles.randType, 'SelectedObject', handles.(paramsLoad.randType));
-    catch
-%         msgbox('Params MISSING!');
+        
+    catch e
+        disp(e.message);
     end
 end
 
@@ -97,6 +99,7 @@ params = getappdata(handles.DemoSettingFig, 'params');
 params.freqVar = eval(['[' get(handles.freqVar, 'string') ']']);
 params.ISIVar = eval(['[' get(handles.ISIVar, 'string') ']']);
 params.standardDeviation = eval(['[' get(handles.standardDeviation, 'string') ']']);
+params.transTrialNum = eval(['[' get(handles.transTrialNum, 'string') ']']);
 % radio button group
 selectedRadio = get(handles.randType, 'SelectedObject');
 params.randType = get(selectedRadio, 'tag');
@@ -214,6 +217,29 @@ function standardDeviation_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function standardDeviation_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to standardDeviation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function transTrialNum_Callback(hObject, eventdata, handles)
+% hObject    handle to transTrialNum (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of transTrialNum as text
+%        str2double(get(hObject,'String')) returns contents of transTrialNum as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function transTrialNum_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to transTrialNum (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

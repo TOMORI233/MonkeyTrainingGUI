@@ -49,6 +49,7 @@ params.att = [];
 params.num = [];
 params.ISI = [];
 params.order = [];
+params.Dur = [];
 oddballTypeAll = [];
 soundNum = [];
 
@@ -63,7 +64,7 @@ end
 ISI = ISI_average;
 ISIInTrial = ISI;
 
-ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = [];
+ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = []; Dur = [];
 for trialN = 1:sweepCountMax*2
     % std number
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
@@ -71,8 +72,8 @@ for trialN = 1:sweepCountMax*2
     % click train odd seq type
 
     orderIdx = randsrc(1,1,[orders; orderProb]);
-    stdOrder = pairs(orderIdx,1);
-    curOrder = pairs(orderIdx,2);
+    stdOrder = pairs(1, orderIdx);
+    curOrder = pairs(2, orderIdx);
     stdAtt = attIdx(stdOrder);
     curAtt = attIdx(curOrder);
 
@@ -110,10 +111,21 @@ for trialN = 1:sweepCountMax*2
 
         end
     end
-     if transFlag
-        ISICur = ISIRandPool(mod(trialN - 1,transTrialNum) + 1);;
-    else
-        ISICur = ISIInTrial;
+    switch randType
+        case 'ISI'
+            if transFlag
+                ISICur = ISIRandPool(mod(trialN - 1,transTrialNum) + 1);
+            else
+                ISICur = ISIInTrial;
+            end
+            durCur = durationStd;
+        case 'duration'
+            if transFlag
+                durCur = Lduration;
+            else
+                durCur = durationStd;
+            end
+            ISICur = ISIInTrial;
     end
 
     % integrate stim parameters
@@ -124,6 +136,7 @@ for trialN = 1:sweepCountMax*2
     params.num = [params.num ; (1:stdNum+1)'];
     params.ISI = [params.ISI ; ones(stdNum+1,1)*ISICur];
     params.order = [params.order ; order];
+    params.Dur = [params.Dur; durCur];
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
     soundNum = [soundNum ; stdNum+1];
 end
@@ -132,7 +145,7 @@ params.soundNum = soundNum;
 DTO.vars.oddballTypeAll = oddballTypeAll;
 DTO.vars.soundNum = soundNum;
 DTO.vars.ISIAll = params.ISI;
-
+DTO.vars.Dur = params.Dur;
 path = 'D:\Monkey\matlab\parameters';
 generateParamsFiles(path,params);
 
@@ -190,7 +203,7 @@ time2LastSound = toc*1000 -firstOnset2LastOnset;
 % Trial started by monkey
 if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInterval / period
     sweepCount = sweepCount + 1;
-
+    obj.write('Duration', Dur(sweepCount));
     % Idle
     if sweepCount > sweepCountMax + addSweepCount
         disp('Reach max sweep count');
@@ -252,7 +265,7 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
             case 'noise'
 
         end
-        obj.write('Duration', durationStd);
+        
         obj.write('trig', 1);
         obj.write('trig', 0);
         tic

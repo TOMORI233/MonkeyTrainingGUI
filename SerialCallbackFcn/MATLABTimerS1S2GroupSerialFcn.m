@@ -27,7 +27,7 @@ function MATLABTimerS1S2GroupSerialFcn(device, ~)
         % obj.write('T', 0);
 
         %% Trial started by monkey (Used when rising egde detected only)
-        if ~trialStartFlag && tCount >= max([lastStiOnsetTime pushTime]) + delayTime / period
+        if ~trialStartFlag && tCount >= lastStiOnsetTime + delayTime / period
             pushAfterDelayFlag = true;
         end
         pushTime = tCount;
@@ -35,12 +35,12 @@ function MATLABTimerS1S2GroupSerialFcn(device, ~)
         %% Novelty detection
         if trialStartFlag
             pushInTrialFlag = true;
-
+            
             if stiCount <= 2 * stdNum + 1
                 % interruption
                 disp('interrupt');
                 obj.write('error', 1);
-                trialStartFlag = false;
+                
                 addSweepCount = addSweepCount + 1;
             else
                 % dev correct
@@ -49,11 +49,11 @@ function MATLABTimerS1S2GroupSerialFcn(device, ~)
                     obj.write('W', rewardTimeCorrect);
                     obj.write('water', 1);
                     obj.write('water', 0);
-                    trialStartFlag = false;
+                    
                 end
 
             end
-
+            trialStartFlag = false;
         end
 
         obj.write('push', 1);

@@ -22,7 +22,7 @@ function varargout = ClickTrainOddLongShortTermSetting(varargin)
 
 % Edit the above text to modify the response to help ClickTrainOddLongShortTermSetting
 
-% Last Modified by GUIDE v2.5 09-Jun-2022 20:11:38
+% Last Modified by GUIDE v2.5 14-Jun-2022 12:47:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,13 +56,15 @@ if ~isempty(varargin)
     paramsLoad = varargin{1};
     try
         %% TODO: Initiate your params here
-%         set(handles.pairs, 'string', num2str(paramsLoad.pairs));
+        set(handles.pairs, 'string', [num2str(paramsLoad.pairs(1,:)), ';' , num2str(paramsLoad.pairs(2,:))]);
         set(handles.orders, 'string', num2str(paramsLoad.orders));
         set(handles.orderProb, 'string', num2str(rats(paramsLoad.orderProb, 3)));
         set(handles.standardDeviation, 'string', num2str(paramsLoad.standardDeviation));
         set(handles.ISIVar, 'string', num2str(paramsLoad.ISIVar));
         set(handles.residual, 'string', num2str(paramsLoad.residual));
         set(handles.transTrialNum, 'string', num2str(paramsLoad.transTrialNum));
+        set(handles.Lduration, 'string', num2str(paramsLoad.Lduration));
+        set(handles.randType, 'SelectedObject', handles.(paramsLoad.randType));
         
 
     catch
@@ -107,6 +109,12 @@ params.standardDeviation = eval(['[' get(handles.standardDeviation, 'string') ']
 params.ISIVar = eval(['[' get(handles.ISIVar, 'string') ']']);
 params.residual = eval(['[' get(handles.residual, 'string') ']']);
 params.transTrialNum = eval(['[' get(handles.transTrialNum, 'string') ']']);
+params.Lduration = eval(['[' get(handles.Lduration, 'string') ']']);
+
+% radio button group
+selectedRadio = get(handles.randType, 'SelectedObject');
+params.randType = get(selectedRadio, 'tag');
+
 
 %% Save params to appdata
 setappdata(handles.ClickTrainOddLSTSettingFig, 'params', params);
@@ -338,6 +346,75 @@ function transTrialNum_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function transTrialNum_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to transTrialNum (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit12_Callback(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit12 as text
+%        str2double(get(hObject,'String')) returns contents of edit12 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit12_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit13_Callback(hObject, eventdata, handles)
+% hObject    handle to edit13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit13 as text
+%        str2double(get(hObject,'String')) returns contents of edit13 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit13_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function Lduration_Callback(hObject, eventdata, handles)
+% hObject    handle to Lduration (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Lduration as text
+%        str2double(get(hObject,'String')) returns contents of Lduration as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Lduration_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Lduration (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

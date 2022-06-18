@@ -168,7 +168,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     % determine sequence
     freqSeq = ones(1, 2 * stdNum) * frequencyStd;
     freqSeq(1:2:end) = frequencyStd * freq2StdRatio;
-    freqSeq = [freqSeq, frequencyStd * freq2StdRatio, frequencyDev];
+    freqSeq = [freqSeq, frequencyDev * freq2StdRatio, frequencyDev];
     intensitySeq = [ones(1, 2 * stdNum ) * intensityStd, intensityStd, intensityDev];
     attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
     ISISeq = ones(1, 2 * stdNum) * IntervalInGroup;

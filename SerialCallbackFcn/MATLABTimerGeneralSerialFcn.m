@@ -27,7 +27,7 @@ function MATLABTimerGeneralSerialFcn(device, ~)
         % obj.write('T', 0);
 
         %% Trial started by monkey (Used when rising egde detected only)
-        if ~trialStartFlag && tCount >= max([lastStiOnsetTime pushTime]) + delayTime / period
+        if ~trialStartFlag && tCount >= lastStiOnsetTime + delayTime / period
             pushAfterDelayFlag = true;
         end
         pushTime = tCount;

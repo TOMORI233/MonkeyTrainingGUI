@@ -71,8 +71,8 @@ for trialN = 1:sweepCountMax*2
     % click train odd seq type
 
     orderIdx = randsrc(1,1,[orders; orderProb]);
-    stdOrder = pairs(orderIdx,1);
-    curOrder = pairs(orderIdx,2);
+    stdOrder = pairs(1, orderIdx);
+    curOrder = pairs(2, orderIdx);
     stdAtt = attIdx(stdOrder);
     curAtt = attIdx(curOrder);
 
