@@ -16,11 +16,13 @@ DTO.vars.stiCount = 0;
 DTO.vars.sweepCount = 0;
 DTO.vars.tCount = 0;
 DTO.vars.time2LastSound = 0;
+DTO.vars.offTime = 0;
 DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
 DTO.vars.firstOnset2LastOnset = 0;
 DTO.vars.time2LastSound = 0; % for choice win based on tic-toc
 DTO.vars.addSweepCount = 0;
+
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -64,7 +66,7 @@ end
 ISI = ISI_average;
 ISIInTrial = ISI;
 
-ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = []; Dur = [];
+ISIAll = []; orderAll = []; repAll = []; numsAll = []; numAllall = []; ratioAll = []; WAll = []; ISIInTrialAll = []; attAll = []; Dur = [];params.ISICur = [];
 for trialN = 1:sweepCountMax*2
     % std number
     stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
@@ -137,6 +139,7 @@ for trialN = 1:sweepCountMax*2
     params.ISI = [params.ISI ; ones(stdNum+1,1)*ISICur];
     params.order = [params.order ; order];
     params.Dur = [params.Dur; durCur];
+    params.ISICur = [params.ISICur; ISICur];
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
     soundNum = [soundNum ; stdNum+1];
 end
@@ -146,6 +149,7 @@ DTO.vars.oddballTypeAll = oddballTypeAll;
 DTO.vars.soundNum = soundNum;
 DTO.vars.ISIAll = params.ISI;
 DTO.vars.Dur = params.Dur;
+DTO.vars.ISICur = params.ISICur;
 path = 'D:\Monkey\matlab\parameters';
 generateParamsFiles(path,params);
 
@@ -194,7 +198,7 @@ end
 %% TODO: Stimulus
 % tCount = tCount + 1;
 tCount = toc(sessionStart) / DTO.period; % period = 0.02;
-time2LastSound = toc*1000 -firstOnset2LastOnset;
+time2LastSound = toc*1000 - firstOnset2LastOnset;
 % Punish for not starting, for ACTIVE
 % if tCount >= max([lastStiOnsetTime, pushTime]) + punishDelayTime * 1000 / period
 %     obj.write('T', 1); % Punishment On
@@ -221,7 +225,6 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     end
 
 
-    firstOnset2LastOnset = sum(ISIAll(idx));
 
 
 
@@ -236,6 +239,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     oddballType = oddballTypeAll{sweepCount};
     stdNum = soundNum(sweepCount) - 1;
 
+    firstOnset2LastOnset = ISICur(sweepCount) * stdNum;
     % Set flags
     trialStartFlag = true;
 
@@ -245,7 +249,7 @@ end
 
 % trig current trial
 %         obj.write('sweep', sweepCount);
-if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= stdNum
+if trialStartFlag && tCount >= lastStiOnsetTime + ISICur(sweepCount) / period && stiCount <= stdNum
     stiCount = stiCount + 1;
     %       disp([soundType, ': ', num2str(stiCount)]);
 

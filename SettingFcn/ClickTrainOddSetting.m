@@ -58,11 +58,12 @@ if ~isempty(varargin)
         %% TODO: Initiate your params here
         set(handles.pairs, 'string', [num2str(paramsLoad.pairs(1,:)), ';' , num2str(paramsLoad.pairs(2,:))]);
         set(handles.orders, 'string', num2str(paramsLoad.orders));
-        set(handles.orderProb, 'string', num2str(rats(paramsLoad.orderProb, 3)));
+        set(handles.orderProb, 'string', num2str(rats(paramsLoad.orderProb, 7)));
     catch
 %         msgbox('Params MISSING!');
     end
 end
+
 
 % Choose default command line output for ClickTrainOddSetting
 handles.output = hObject;

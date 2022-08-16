@@ -22,7 +22,7 @@ function varargout = PEOddWorkingMemorySetting(varargin)
 
 % Edit the above text to modify the response to help PEOddWorkingMemorySetting
 
-% Last Modified by GUIDE v2.5 09-Jun-2022 20:27:45
+% Last Modified by GUIDE v2.5 16-Aug-2022 10:54:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,7 +56,7 @@ if ~isempty(varargin)
     paramsLoad = varargin{1};
     try
         set(handles.freqTrialRatio, 'string', num2str(paramsLoad.freqTrialRatio));
-        set(handles.intensityTrialRatio, 'string', num2str(paramsLoad.intensityTrialRatio));
+        set(handles.locationTrialRatio, 'string', num2str(paramsLoad.locationTrialRatio));
         set(handles.doubleTrialRatio, 'string', num2str(paramsLoad.doubleTrialRatio));
         set(handles.lastStdToDev, 'string', num2str(paramsLoad.lastStdToDev));
     catch
@@ -93,7 +93,7 @@ function buttonOK_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 params.freqTrialRatio = str2double(get(handles.freqTrialRatio, 'String'));
-params.intensityTrialRatio = str2double(get(handles.intensityTrialRatio, 'String'));
+params.locationTrialRatio = str2double(get(handles.locationTrialRatio, 'String'));
 params.doubleTrialRatio = str2double(get(handles.doubleTrialRatio, 'String'));
 params.lastStdToDev = str2double(get(handles.lastStdToDev, 'String'));
 
@@ -134,18 +134,18 @@ end
 
 
 
-function intensityTrialRatio_Callback(hObject, eventdata, handles)
-% hObject    handle to intensityTrialRatio (see GCBO)
+function locationTrialRatio_Callback(hObject, eventdata, handles)
+% hObject    handle to locationTrialRatio (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of intensityTrialRatio as text
-%        str2double(get(hObject,'String')) returns contents of intensityTrialRatio as a double
+% Hints: get(hObject,'String') returns contents of locationTrialRatio as text
+%        str2double(get(hObject,'String')) returns contents of locationTrialRatio as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function intensityTrialRatio_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to intensityTrialRatio (see GCBO)
+function locationTrialRatio_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to locationTrialRatio (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

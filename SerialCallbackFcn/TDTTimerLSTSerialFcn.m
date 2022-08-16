@@ -1,4 +1,4 @@
-function TDTTimerGeneralSerialFcn(device, ~)
+function TDTTimerLSTSerialFcn(device, ~)
     %% Read 1 byte data from serialport
     res = read(device, 1, 'uint8');
     %% Get constants and variables
@@ -27,7 +27,7 @@ function TDTTimerGeneralSerialFcn(device, ~)
         obj.write('T', 0);
 
         %% Trial started by monkey (Used when rising egde detected only)
-        if ~trialStartFlag && tCount >= lastStiOnsetTime + delayTime / period
+        if ~trialStartFlag && tCount >= lastStiOnsetTime + max([delayTime, offTime]) / period
             pushAfterDelayFlag = true;
         end
         pushTime = tCount;
@@ -40,7 +40,7 @@ function TDTTimerGeneralSerialFcn(device, ~)
                 % interruption
                 disp('interrupt');
                 disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
-                offTime = (soundNum(sweepCount)-stiCount)*ISI + delayTime/2;
+                offTime = (soundNum(sweepCount)-stiCount) * ISICur(sweepCount) + delayTime/2;
                 disp(['offTime = ' num2str(offTime)]);
                 obj.write('offTime', offTime);
                 obj.write('intrpt', 1);
@@ -55,10 +55,10 @@ function TDTTimerGeneralSerialFcn(device, ~)
 
                     obj.write('W', rewardTimeCorrect);
                     if sweepCount > 100
-                        obj.write('W', rewardTimeCorrect*1.35);
+                        obj.write('W', rewardTimeCorrect*1.3);
                     end
                     if sweepCount > 200
-                        obj.write('W', rewardTimeCorrect*1.7);   %水量
+                        obj.write('W', rewardTimeCorrect*1.5);
                     end
                     obj.write('water', 1);
                     obj.write('water', 0);

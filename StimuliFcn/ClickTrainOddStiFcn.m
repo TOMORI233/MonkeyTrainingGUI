@@ -245,12 +245,12 @@ end
 if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     % if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
 
-    obj.write('W', rewardTimeCorrect);
+    obj.write('W', rewardTimeCorrect*1.3);
     if sweepCount > 200
-        obj.write('W', rewardTimeCorrect*1.1);
+        obj.write('W', rewardTimeCorrect*1.1*1.3);
     end
     if sweepCount > 300
-        obj.write('W', rewardTimeCorrect*1.3);
+        obj.write('W', rewardTimeCorrect*1.3*1.3);
     end
     obj.write('water', 1);
     obj.write('water', 0);
