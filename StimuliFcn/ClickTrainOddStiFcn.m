@@ -119,7 +119,7 @@ generateParamsFiles(path,params);
 %% Set TDT device obj
 %     DTO.obj = [];
 DTO.obj = TDEV();
-DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{1};
+DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{2};
 DTO.obj.standby;
 pause(2);
 
@@ -204,6 +204,22 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
 
     % Set flags
     trialStartFlag = true;
+    
+
+        switch soundType
+            case 'pureTone'
+
+            case 'complexTone'
+
+            case 'noise'
+
+        end
+        obj.write('sweep', sweepCount);
+        obj.write('Duration', durationStd);
+        obj.write('trig', 1);
+        obj.write('trig', 0);
+        tic
+
 
     %     disp(['Trial Start - ' num2str(sweepCount)]);
     %     disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
@@ -221,21 +237,8 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
     %       disp(['current tCount = ' num2str(tCount)]);
     %       disp(['next sti time = ' num2str( lastStiOnsetTime + ISI / period)]);
     lastStiOnsetTime = tCount;
-    obj.write('sweep', sweepCount);
-    if stiCount == 1
-        switch soundType
-            case 'pureTone'
+    
 
-            case 'complexTone'
-
-            case 'noise'
-
-        end
-        obj.write('Duration', durationStd);
-        obj.write('trig', 1);
-        obj.write('trig', 0);
-        tic
-    end
 end
 
 
@@ -245,12 +248,12 @@ end
 if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     % if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=   waterDelayTimeStd  && strcmp(oddballType, 'STD') && ~pushInTrialFlag
 
-    obj.write('W', rewardTimeCorrect);
+    obj.write('W', rewardTimeCorrect*1.3);
     if sweepCount > 200
-        obj.write('W', rewardTimeCorrect*1.1);
+        obj.write('W', rewardTimeCorrect*1.1*1.3);
     end
     if sweepCount > 300
-        obj.write('W', rewardTimeCorrect*1.3);
+        obj.write('W', rewardTimeCorrect*1.3*1.3);
     end
     obj.write('water', 1);
     obj.write('water', 0);

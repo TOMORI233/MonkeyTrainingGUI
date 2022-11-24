@@ -159,7 +159,7 @@ generateParamsFiles(path,params);
 %% Set TDT device obj
 %     DTO.obj = [];
 DTO.obj = TDEV();
-DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{1};
+DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{2};
 DTO.obj.standby;
 pause(2);
 
@@ -237,6 +237,20 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
 
     % Set flags
     trialStartFlag = true;
+    
+    
+       switch soundType
+            case 'pureTone'
+
+            case 'complexTone'
+
+            case 'noise'
+
+       end
+        obj.write('sweep', sweepCount);
+        obj.write('trig', 1);
+        obj.write('trig', 0);
+        tic
 
     %     disp(['Trial Start - ' num2str(sweepCount)]);
     %     disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
@@ -254,20 +268,7 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= st
     %       disp(['current tCount = ' num2str(tCount)]);
     %       disp(['next sti time = ' num2str( lastStiOnsetTime + ISI / period)]);
     lastStiOnsetTime = tCount;
-    obj.write('sweep', sweepCount);
-    if stiCount == 1
-        switch soundType
-            case 'pureTone'
 
-            case 'complexTone'
-
-            case 'noise'
-
-        end
-        obj.write('trig', 1);
-        obj.write('trig', 0);
-        tic
-    end
 end
 % if stiCount == stdNum + 1
 %     toc

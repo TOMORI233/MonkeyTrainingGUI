@@ -50,7 +50,7 @@ end
 %% Set TDT device obj
 %     DTO.obj = [];
 DTO.obj = TDEV();
-DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{1};
+DTO.obj.DEVICE_NAME = DTO.obj.DEVICE_NAMES{2};
 DTO.obj.standby;
 pause(2);
 
@@ -149,9 +149,9 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     intensityDev = intensityStd;
 
     % dev location
-    if locationNum ~= length(diffProb) % location number should be same as number of frequency
-        locationNum = length(diffProb);
-    end
+%     if locationNum ~= length(diffProb) % location number should be same as number of frequency
+%         locationNum = length(diffProb);
+%     end
     locationDev = diffLevel; % the diff level of location and frequency should be same
 
     % TODO: dev duration

@@ -19,8 +19,9 @@ function TDTTimerGeneralSerialFcn(device, ~)
         eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
     end
 
+    oneSecBeforeStart_Flag = tCount >=  pushTime + (pushToOnsetInterval - 300) / period & tCount <=  pushTime + (pushToOnsetInterval + 300) / period;
     %% TODO
-    if ~isempty(res) && res(1) == 1
+    if ~isempty(res) && res(1) == 1 && ~oneSecBeforeStart_Flag
         disp('push - rising edge');
 
         %% Punishment off
@@ -37,16 +38,17 @@ function TDTTimerGeneralSerialFcn(device, ~)
             pushInTrialFlag = true;
 
             if stiCount <= stdNum || time2LastSound <= choiceWindow(1)
-                % interruption
-                disp('interrupt');
-                disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
-                offTime = (soundNum(sweepCount)-stiCount)*ISI + delayTime/2;
-                disp(['offTime = ' num2str(offTime)]);
-                obj.write('offTime', offTime);
-                obj.write('intrpt', 1);
-                obj.write('intrpt', 0);
-                obj.write('error', 1);
-                addSweepCount = addSweepCount + 1;
+                 if  stiCount > 2
+                    disp('interrupt');
+                    disp(['stiCount = ' num2str(stiCount) ' stdNum = ' num2str(stdNum) ]);
+                    offTime = (soundNum(sweepCount)-stiCount)*ISI + delayTime/2;
+                    disp(['offTime = ' num2str(offTime)]);
+                    obj.write('offTime', offTime);
+                    obj.write('intrpt', 1);
+                    obj.write('intrpt', 0);
+                 end
+                    obj.write('error', 1);
+                    addSweepCount = addSweepCount + 1;
             else
                 % dev correct
 %                 if tCount >= lastStiOnsetTime + choiceWindow(1) / period && tCount <= lastStiOnsetTime + choiceWindow(2) / period && strcmp(oddballType, 'DEV')
@@ -54,11 +56,11 @@ function TDTTimerGeneralSerialFcn(device, ~)
                     disp('dev correct');
 
                     obj.write('W', rewardTimeCorrect);
-                    if sweepCount > 200
-                        obj.write('W', rewardTimeCorrect*1.1);
+                    if sweepCount > 100
+                        obj.write('W', rewardTimeCorrect*1.35);
                     end
-                    if sweepCount > 300
-                        obj.write('W', rewardTimeCorrect*1.3);
+                    if sweepCount > 200
+                        obj.write('W', rewardTimeCorrect*1.7);   %水量
                     end
                     obj.write('water', 1);
                     obj.write('water', 0);

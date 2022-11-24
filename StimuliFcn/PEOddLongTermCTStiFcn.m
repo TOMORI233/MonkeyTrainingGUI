@@ -70,7 +70,7 @@ for trialN = 1:sweepCountMax*2
     % save frequencyStd
 
     lowHighFreqRange = lowHighLimit * freqStdCopy;
-    % sequency transform
+    % sequence transform
     if mod(trialN-1,transTrialNum) == 0
         freqRandPool = 0;
         while any(freqRandPool < lowHighFreqRange(1) | freqRandPool > lowHighFreqRange(2)) % all random frequency should in lowHighLimitRange
