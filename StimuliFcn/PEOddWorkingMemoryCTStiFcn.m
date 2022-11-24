@@ -149,9 +149,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     intensityDev = intensityStd;
 
     % dev location
-%     if locationNum ~= length(diffProb) % location number should be same as number of frequency
-%         locationNum = length(diffProb);
-%     end
+
     locationDev = diffLevel; % the diff level of location and frequency should be same
 
     % TODO: dev duration
