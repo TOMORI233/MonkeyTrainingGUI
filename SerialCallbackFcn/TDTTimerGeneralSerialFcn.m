@@ -1,6 +1,6 @@
 function TDTTimerGeneralSerialFcn(device, ~)
     %% Read 1 byte data from serialport
-    res = read(device, 1, 'uint8');
+    res = read(device, 1, 'uint8')
     %% Get constants and variables
     DTO = get(device, 'UserData');
     period = DTO.period * 1000; % ms

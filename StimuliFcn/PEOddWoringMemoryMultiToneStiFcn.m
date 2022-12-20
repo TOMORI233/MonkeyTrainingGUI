@@ -4,6 +4,7 @@ DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
 DTO.vars.cueType = [];
 DTO.vars.freqSeq = [];
+DTO.vars.durSeq = [];
 DTO.vars.ISISeq = 0;
 DTO.vars.intensityFile = LoadIntensityFile(DTO.params.stiPosition, DTO.params.soundType);
 DTO.vars.intensitySeq = [];
@@ -36,15 +37,12 @@ if offsetChoiceWinFlag
 end
 configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
-
 % read Variables
 varsNames = fieldnames(DTO.vars);
 
 for index = 1:size(varsNames, 1)
     eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
 end
-
-
 
 % pause(2);
 %% Set TDT device obj
@@ -63,6 +61,9 @@ set(device, 'UserData', DTO);
 start(mTimer);
 DTO.obj.record;
 % DTO.obj.preview;
+
+DTO.obj.write('waterDelay', waterDelayTimeDev);
+
 
 end
 
@@ -113,7 +114,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
         delete(timerfind);
     end
     % time to devonset
-    obj.write('waterDelay', waterDelayTimeDev);
+    
     % Reset flags
     pushInTrialFlag = false;
     pushAfterDelayFlag = false;
@@ -154,7 +155,7 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     locationDev = diffLevel; % the diff level of location and frequency should be same
 
     % TODO: dev duration
-    % durationDev = durationStd;
+    durationDev = durationStd
 
     % TODO: random ISI
 
@@ -204,11 +205,12 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
     attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
     ISISeq = [0, ones(1, stdNum-1) * ISI_average, lastStdToDev, 0];
-    % durSeq = [ones(1, stdNum) * durationStd, durationDev];
+    durSeq = [ones(1, stdNum) * durationStd, durationDev]
 
     % Set flags
     trialStartFlag = true;
-
+    obj.write('sweep', sweepCount);
+    disp(num2str(durationStd));
     disp(['Trial Start - ' num2str(sweepCount)]);
     disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
 end
@@ -220,7 +222,6 @@ end
 if trialStartFlag && tCount >= lastStiOnsetTime + ISISeq(stiCount + 1) / period && stiCount <= stdNum
     stiCount = stiCount + 1;
     lastStiOnsetTime = tCount;
-    obj.write('sweep', sweepCount);
 
     switch soundType
         case 'pureTone'
@@ -230,12 +231,13 @@ if trialStartFlag && tCount >= lastStiOnsetTime + ISISeq(stiCount + 1) / period 
         case 'noise'
 
     end
-
-    disp([soundType, ': ', num2str(stiCount)]);
-    disp(['freq: ', num2str(freqSeq(stiCount)), ' att: ', num2str(attSeq(stiCount))]);
-
+    
     obj.write('att', attSeq(stiCount));
-    obj.write('Dur', intensitySeq(stiCount));
+    obj.write('Int', intensitySeq(stiCount));
+    obj.write('soundDur', durSeq(stiCount));
+    disp([soundType, ': ', num2str(stiCount)]);
+    disp(['freq: ', num2str(freqSeq(stiCount)), ' att: ', num2str(attSeq(stiCount)), ' soundDur: ', num2str(durSeq(stiCount))]);
+    
     obj.write('num', stiCount);
     obj.write('trig', 1);
     obj.write('trig', 0);

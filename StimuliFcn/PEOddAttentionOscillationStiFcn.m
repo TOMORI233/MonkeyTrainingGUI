@@ -1,4 +1,4 @@
-function PEOddBlockFreqLocAddByIntrptCTStiFcn(device)
+function PEOddAttentionOscillationStiFcn(device)
 %% Variables initialization
 DTO = get(device, 'UserData');
 DTO.vars.attSeq = [];
@@ -7,7 +7,9 @@ DTO.vars.freqSeq = [];
 DTO.vars.intensityFile = LoadIntensityFile(DTO.params.stiPosition, DTO.params.soundType);
 DTO.vars.intensitySeq = [];
 DTO.vars.ISI = DTO.params.ISI_average;
+DTO.vars.lastISI = 0;
 DTO.vars.lastStiOnsetTime = 0;
+DTO.vars.firstOnset2LastOnset = 0; 
 DTO.vars.pushInTrialFlag = false;
 DTO.vars.pushAfterDelayFlag = true;
 DTO.vars.pushTime = 0;
@@ -18,14 +20,10 @@ DTO.vars.tCount = 0;
 DTO.vars.time2LastSound = 0;
 DTO.vars.trialStartFlag = false;
 DTO.vars.oddballType = [];
-DTO.vars.oddballType = [];
-DTO.vars.firstOnset2LastOnset = 0;
-DTO.vars.time2LastSound = 0;
 DTO.vars.addSweepCount = 0;
-DTO.vars.freqTrialN = DTO.params.freqTrialN;
-DTO.vars.locTrialN = DTO.params.locTrialN;
-DTO.vars.randTrialN = DTO.params.randTrialN;
-
+DTO.vars.freqTrialRatio = 20;
+DTO.vars.intensityTrialRatio = 10;
+DTO.vars.doubleTrialRatio = 70;
 %% Initialize TDT constant params
 % DTO.obj.write('waterDelay', waterDelayTimeDev);
 % Constant parameters
@@ -44,14 +42,11 @@ configureCallback(device, 'byte', 1, DTO.callbackFcn);
 
 %% Generate oddball sequence
 params.freq = [];
-params.freqStd = [];
 params.Int = [];
-params.location = [];
-params.locationStd = [];
 params.att = [];
-params.attStd = [];
 params.num = [];
 params.ISI = [];
+params.lastISISeq = [];
 oddballTypeAll = [];
 soundNum = [];
 
@@ -62,129 +57,107 @@ for index = 1:size(varsNames, 1)
     eval([varsNames{index}, '=DTO.vars.', varsNames{index}, ';']);
 end
 
-for trialN = 1 : sweepCountMax*2
-    
+for trialN = 1:sweepCountMax*2
     % std number
-    stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb']);
-    
+    stdNum = randsrc(1, 1, [stdNumArray'; stdNumProb'])
 
     % cue type (cue integration protocol used only)
-    freqTrialRatio = 50;
-    locationTrialRatio = 50;
-    doubleTrialRatio = 0;
-    cueTypeStr = {'freq', 'location', 'double'};
-    nCueType = length(find([freqTrialRatio locationTrialRatio doubleTrialRatio] ~= 0));
-    
+    cueTypeStr = {'freq', 'intensity', 'double'};
+    cueType = cueTypeStr{randsrc(1, 1, [[1 2 3]; [freqTrialRatio intensityTrialRatio doubleTrialRatio] / 100])};
+    nCueType = length(find([freqTrialRatio intensityTrialRatio doubleTrialRatio] ~= 0));
+
     % std freq
     if randomStdFreqFlag
         frequencyStd = (200 + randperm(100, 1)) * 16;
     end
-    
-    % std location
-    locationStd = 0;
-    
+
     % difference level
-    
     % Calibration of prob for used cueType
     pControl = 1 / ((1 / freqDiffProb(1) - 1) * nCueType + 1);
     diffProb = [pControl; (1 - pControl) * freqDiffProb(2:end) / (1 - freqDiffProb(1))];
     diffLevel = randsrc(1, 1, [0:(length(diffProb) - 1); diffProb']);
-    
+
     % dev freq
     if strcmp(freqIncOrDec, 'freqInc')
         frequencyDev = frequencyStd * freqBaseDiffRatio^diffLevel;
     else
         frequencyDev = frequencyStd / freqBaseDiffRatio^diffLevel;
     end
-    
+
     % dev intensity
-    intensityDev = intensityStd;
-    
-    % dev location
-    if locationNum ~= length(diffProb) % location number should be same as number of frequency
-        locationNum = length(diffProb);
+    if strcmp(intensityIncOrDec, 'intensityInc')
+        intensityDev = intensityStd + intensityMinDiff * diffLevel;
+    else
+        intensityDev = intensityStd - intensityMinDiff * diffLevel;
     end
-    locationDev = diffLevel; % the diff level of location and frequency should be same
-    
+
     % TODO: dev duration
     % durationDev = durationStd;
-    
+
     % TODO: random ISI
     ISI = ISI_average;
-    
+    ISIs = ISI_range(1):ISI_step:ISI_range(2);
+    lastISI = ISIs(randperm(length(ISIs), 1));
+
     % TODO: random position
     %
-    
-    
-        % sequence transform
- cueType = 'double';
-    
-    
-    
+
     % determine oddball trial type
     oddballType = 'DEV';
-    
+
     switch cueType
         case 'freq'
-            locationDev = locationStd;
-            
+            intensityDev = intensityStd;
+
             if frequencyDev == frequencyStd
                 oddballType = 'STD';
             end
-            
-        case 'location'
+
+        case 'intensity'
             frequencyDev = frequencyStd;
-            
-            if locationDev == locationStd
+
+            if intensityDev == intensityStd
                 oddballType = 'STD';
             end
-            
+
         case 'double'
-            
-            
-            if frequencyDev == frequencyStd && locationDev == locationStd
+
+            if frequencyDev == frequencyStd && intensityDev == intensityStd
                 oddballType = 'STD';
             end
-            
+
     end
-    
+
     % reverse STD and DEV
     if fixedDevFlag
         frequencyStdDev = [frequencyStd ^ 2 / frequencyDev, frequencyStd];
     else
         frequencyStdDev = [frequencyStd, frequencyDev];
     end
-    
+
     % determine sequence
     freqSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(2)];
-    freqStdSeq = [ones(1, stdNum) * frequencyStdDev(1), frequencyStdDev(1)];
-    locationSeq = [ones(1, stdNum) * locationStd, locationDev];
-    locationStdSeq = [ones(1, stdNum) * locationStd, locationStd];
     intensitySeq = [ones(1, stdNum) * intensityStd, intensityDev];
-    attSeq = CalAttenuation(stiPosition, 'complexToneSmall', freqSeq, intensitySeq, intensityFile);
-    attStdSeq = CalAttenuation(stiPosition, 'complexToneSmall', freqStdSeq, intensitySeq, intensityFile);
+    attSeq = CalAttenuation(stiPosition, soundType, freqSeq, intensitySeq, intensityFile);
     % durSeq = [ones(1, stdNum) * durationStd, durationDev];
-    
+
     % integrate stim parameters
     params.freq = [params.freq ; freqSeq'];
-    params.freqStd = [params.freqStd ; freqStdSeq'];
     params.Int = [params.Int ; intensitySeq'];
-    params.location = [params.location ; locationSeq'];
-    params.locationStd = [params.locationStd ; locationStdSeq'];
     params.att = [params.att ; reshape(attSeq,[length(attSeq),1])];
-    params.attStd = [params.attStd ; reshape(attStdSeq,[length(attStdSeq),1])];
     params.num = [params.num ; (1:stdNum+1)'];
-    params.ISI = [params.ISI ; ones(stdNum+1,1)*ISI];
-    
+    params.ISI = [params.ISI ; ones(stdNum,1)*ISI; lastISI];
+    params.lastISISeq = [params.lastISISeq; lastISI];
+
     oddballTypeAll = [oddballTypeAll ; {oddballType}];
     soundNum = [soundNum ; stdNum+1];
-    
+
 end
 params.soundNum = soundNum;
 DTO.vars.oddballTypeAll = oddballTypeAll;
 DTO.vars.soundNum = soundNum;
 DTO.vars.ISIAll = params.ISI;
-
+DTO.vars.lastISIAll = params.lastISISeq;
 
 path = 'D:\Monkey\matlab\parameters';
 generateParamsFiles(path,params);
@@ -216,7 +189,6 @@ DTO = get(device, 'UserData');
 period = DTO.period * 1000; % ms
 obj = DTO.obj;
 
-
 paramsNames = fieldnames(DTO.params);
 
 for index = 1:size(paramsNames, 1)
@@ -243,14 +215,6 @@ end
 % Trial started by monkey
 if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInterval / period
     sweepCount = sweepCount + 1;
-    blockTransNum = cumsum([freqTrialN, locTrialN, randTrialN]); % in an order as: freq, loc, rand
-    if prod(mod(sweepCount - 1,blockTransNum(end)) - [0 blockTransNum(1)]) <= 0 % in the range of freq
-        obj.write('BlockSel', 1);
-    elseif prod(mod(sweepCount - 1,blockTransNum(end)) - [blockTransNum(1)+1 blockTransNum(2)]) <= 0 % in the range of location
-        obj.write('BlockSel', 2);
-    elseif prod(mod(sweepCount - 1,blockTransNum(end)) - [blockTransNum(2)+1 blockTransNum(3)]) <= 0 % in the range of rand
-        obj.write('BlockSel', 3);
-    end
     % Idle
     if sweepCount > sweepCountMax + addSweepCount
         disp('Reach max sweep count');
@@ -265,53 +229,55 @@ if ~trialStartFlag && pushAfterDelayFlag && tCount >= pushTime + pushToOnsetInte
     else
         idx = (1:soundNum(sweepCount)-1) + sum(soundNum(1 : sweepCount - 1));
     end
-    
-    firstOnset2LastOnset = sum(ISIAll(idx));
+    idx
+    lastISI = lastISIAll(sweepCount)
+    firstOnset2LastOnset = sum(ISIAll(idx(1:end-1)))+lastISI
     
     % Reset flags
     pushInTrialFlag = false;
     pushAfterDelayFlag = false;
     stiCount = 0;
-    
+
     % parameters of current trial
     oddballType = oddballTypeAll{sweepCount};
     stdNum = soundNum(sweepCount) - 1;
-    
+
     % Set flags
     trialStartFlag = true;
     
-    %     disp(['Trial Start - ' num2str(sweepCount)]);
-    %     disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
+    
+       switch soundType
+            case 'pureTone'
+
+            case 'complexTone'
+
+            case 'noise'
+
+       end
+        obj.write('sweep', sweepCount);
+        obj.write('trig', 1);
+        obj.write('trig', 0);
+        tic
+        
+        disp(['Trial Start - ' num2str(sweepCount)]);
+        disp([cueType, ' ', oddballType, ' ', num2str(stdNum)]);
 end
 
 % trig current trial
 %         obj.write('sweep', sweepCount);
-if trialStartFlag && tCount >= lastStiOnsetTime + ISI / period && stiCount <= stdNum
-    stiCount = stiCount + 1;
+
+if trialStartFlag && ((tCount >= lastStiOnsetTime + ISI / period && stiCount < stdNum) || (tCount >= lastStiOnsetTime + lastISI / period && stiCount == stdNum))
+        
+        stiCount = stiCount + 1
     %       disp([soundType, ': ', num2str(stiCount)]);
-    
+
     %       disp(['stdNum = ' num2str(stdNum)]);
     %       disp(['trialStartFlag' num2str(trialStartFlag)]);
     %       disp(['stiCount = ' num2str(stiCount)]);
     %       disp(['current tCount = ' num2str(tCount)]);
     %       disp(['next sti time = ' num2str( lastStiOnsetTime + ISI / period)]);
     lastStiOnsetTime = tCount;
-%     obj.write('sweep', sweepCount);
-% 
-%     if stiCount == 1
-%         switch soundType
-%             case 'pureTone'
-%                 
-%             case 'complexTone'
-%                 
-%             case 'noise'
-%                 
-%         end
-%         %         obj.write('numAll', soundNum(sweepCount));
-%         obj.write('trig', 1);
-%         obj.write('trig', 0);
-%         tic
-%     end
+
 end
 % if stiCount == stdNum + 1
 %     toc
@@ -319,19 +285,19 @@ end
 
 % Std trial correct
 % std water time uncorrect, add ISI 20220520
-if trialStartFlag && stiCount >= stdNum + 1 && time2LastSound >=   waterDelayTimeStd - waterDelayTimeDev && strcmp(oddballType, 'STD') && ~pushInTrialFlag
+if trialStartFlag && stiCount == stdNum + 1 && time2LastSound >=  waterDelayTimeStd - waterDelayTimeDev && strcmp(oddballType, 'STD') && ~pushInTrialFlag
     
     obj.write('W', rewardTimeCorrect);
     obj.write('water', 1);
     obj.write('water', 0);
-    disp('std correct');
+    disp('std correct????');
     trialStartFlag = false;
 end
 
 
 % Trial auto end
 if trialStartFlag && stiCount >= stdNum + 1 && tCount > lastStiOnsetTime  + max( offsetChoiceWinFlag * durationStd + [waterDelayTimeStd choiceWindow(2)]) / period
-    
+
     %     disp('trial auto end');
     trialStartFlag = false;
 end
